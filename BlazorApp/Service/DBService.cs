@@ -3,12 +3,16 @@ namespace BlazorApp.Service
 {
 	public class DBService
 	{
-		private readonly string _dbConnectionString;
+        public static DBService Instance { get; private set; }
+
+        private readonly string _dbConnectionString;
 
 		public DBService(string dbConnectionString)
 		{
 			_dbConnectionString = dbConnectionString;
-		}
+			Instance = this;
+
+        }
 
 		public NpgsqlConnection GetConnection()
 		{

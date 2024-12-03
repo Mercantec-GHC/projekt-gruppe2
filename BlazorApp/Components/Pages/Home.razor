@@ -1,21 +1,43 @@
 ﻿@page "/"
 
+@using BlazorApp.Models
 @using BlazorApp.Service
 @inject DBService DbService
 
-<PageTitle>Home</PageTitle>
+@* <PageTitle>Home</PageTitle>
 
 <h1>BookVers</h1>
 
 <a> Uncover Worlds. Discover Deals.</a>
 
-<p>@connectionStatus</p>
+<p>@connectionStatus</p> *@
+
+@* <SearchComponent SearchFilter="@searchFilter"  SearchBookCallback="HandleSearch"></SearchComponent> *@
+@if (!string.IsNullOrWhiteSpace(searchFilter))
+{
+    <BookComponent books="filteredBooks"></BookComponent>
+}
+else
+{
+    <BookComponent books="books" ></BookComponent>
+}
 
 <button type="button" class="btn btn-primary me-3"> I want to buy! </button>
 <button type="button" class="btn btn-primary me-3"> I want to sell! </button>
+
 @code 
 {
     private string connectionStatus;
+
+    private ModelList<Book> books = new ModelList<Book>();
+    private ModelList<Book> filteredBooks = new ModelList<Book>();
+
+    private string searchFilter = "";
+
+    private void HandleSearch(string searchFilter)
+    {
+        this.searchFilter = searchFilter;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,7 +46,7 @@
             using var connection = DbService.GetConnection();
             if (connection.State == System.Data.ConnectionState.Open)
             {
-                connectionStatus = "Database connection successful!";
+                connectionStatus = "Database connection successful!"; 
             }
             else
             {
@@ -35,5 +57,6 @@
         {
             connectionStatus = $"Error: {ex.Message}";
         }
+        books = await Book.QueryAll<Book>();
     }
 }
