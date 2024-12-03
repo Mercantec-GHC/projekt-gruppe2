@@ -4,7 +4,7 @@
 	<input type="text" class="form-control" placeholder="Search ..."
 		   @bind-value="bookFilter"
 		   @bind-value:event="oninput" />
-	<button class="btn btn-primary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
+	@* <button class="btn btn-primary" type="button" id="button-search" @onclick="HandleSearch">Search</button> *@
 </div>
 
 @code {
@@ -19,13 +19,13 @@
 
 	protected override void OnParametersSet()
 	{
-		if (string.IsNullOrWhiteSpace(this.SearchFilter))
-		{
-			books = BooksRepository.GetBooks();
-		}
-		else
-		{
-			books = BooksRepository.SearchBooks(this.SearchFilter);
+		// if (string.IsNullOrWhiteSpace(this.SearchFilter))
+		// {
+		// 	books = BooksRepository.GetBooks();
+		// }
+		// else
+		// {
+		// 	books = BooksRepository.SearchBooks(this.SearchFilter);
 		}
 	}
 

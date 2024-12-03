@@ -6,13 +6,13 @@
 
 @* <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>BookVers</h1>
 
-Welcome to your new app.
+<a> Uncover Worlds. Discover Deals.</a>
 
 <p>@connectionStatus</p> *@
 
-<SearchComponent SearchFilter="@searchFilter"  SearchBookCallback="HandleSearch"></SearchComponent>
+@* <SearchComponent SearchFilter="@searchFilter"  SearchBookCallback="HandleSearch"></SearchComponent> *@
 @if (!string.IsNullOrWhiteSpace(searchFilter))
 {
     <BookComponent books="filteredBooks"></BookComponent>
@@ -22,12 +22,15 @@ else
     <BookComponent books="books" ></BookComponent>
 }
 
+<button type="button" class="btn btn-primary me-3"> I want to buy! </button>
+<button type="button" class="btn btn-primary me-3"> I want to sell! </button>
+
 @code 
 {
     private string connectionStatus;
 
-    private List<Book> books = BooksRepository.GetBooks();
-    private List<Book> filteredBooks = new List<Book> ();
+    private ModelList<Book> books = new ModelList<Book>();
+    private ModelList<Book> filteredBooks = new ModelList<Book>();
 
     private string searchFilter = "";
 
@@ -54,5 +57,6 @@ else
         {
             connectionStatus = $"Error: {ex.Message}";
         }
+        books = await Book.QueryAll<Book>();
     }
 }
