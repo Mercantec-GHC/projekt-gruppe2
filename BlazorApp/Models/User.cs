@@ -23,6 +23,9 @@ namespace BlazorApp.Models
         [SqlItem("password", "TEXT NOT NULL")]
         public string Password { get; set; }
 
+        [SqlItem("role", "TEXT NOT NULL")]
+        public string Role { get; set; }
+
         [SqlItem("created_at", "DATE NOT NULL")]
         public DateTime CreatedAt { get; set; }
     }
