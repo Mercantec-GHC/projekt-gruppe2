@@ -39,15 +39,12 @@ namespace BlazorApp.Models
                 paramCount++;
             }
 
-            Console.WriteLine(query);
-
             using (var connection = DBService.Instance.GetConnection())
             using (var command = new NpgsqlCommand(query, connection))
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    //var user = new User();
                     var item = (T)Activator.CreateInstance(typeof(T));
 
                     var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);

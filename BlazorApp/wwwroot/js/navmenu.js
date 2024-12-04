@@ -1,5 +1,5 @@
 ﻿export function attachHandlers() {
-    const bsCollapse = new bootstrap.Collapse('#navbarNav', {
+    const bsCollapse = new bootstrap.Collapse('#navbarMain', {
         toggle: false
     });
     bsCollapse.hide();
