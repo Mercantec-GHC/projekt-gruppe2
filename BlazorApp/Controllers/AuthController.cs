@@ -19,17 +19,17 @@ namespace BlazorApp.Controllers
         [Route("api/auth/signin")]
         public async Task<ActionResult> SignInPost(SigninData value)
         {
-            ModelList<User> users = await BlazorApp.Models.User.QueryBy<User>(("id", 0));
+            ModelList<User> users = await BlazorApp.Models.User.QueryBy<User>(("email", value.Email));
             User user = users.FirstOrDefault();
             if (user == null) return this.BadRequest();
 
-            //string passwordHash = "$2a$13$PW8.PiOVhxsgWC9nnQgshuX0OBEdKDmsIWcFXD19Whlim5xkwwTAm";
             if (value.Email == user.Email && BCrypt.Net.BCrypt.EnhancedVerify(value.Password, user.Password))
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                    new Claim(ClaimTypes.NameIdentifier, user.Username),
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim(ClaimTypes.PrimarySid, $"{user.Id}")
                 };

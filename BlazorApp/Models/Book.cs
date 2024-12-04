@@ -5,7 +5,6 @@ namespace BlazorApp.Models
 	[Table("books")]
 	public class Book : DatabaseModel
 	{
-
 		[SqlItem("id", "SERIAL PRIMARY KEY")]
 		public int Id { get; set; }
 

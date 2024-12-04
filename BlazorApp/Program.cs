@@ -27,6 +27,7 @@ namespace BlazorApp
             {
                 options.Cookie.Name = "auth_token";
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                options.LoginPath = "/login";
             });
 
             builder.Services.AddCascadingAuthenticationState();
@@ -54,11 +55,10 @@ namespace BlazorApp
             app.UseStaticFiles();
             app.UseAntiforgery();
 
-            app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode();
+			app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-            // Maps the API controller for authentication.
-            app.UseEndpoints(endpoints =>
+			// Maps the API controller for authentication.
+			app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });

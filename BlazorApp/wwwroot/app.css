@@ -57,5 +57,6 @@ h1:focus {
     bottom: 0;
     left: 0;
     background-color: aqua;
+    display: none;
 }
 
