@@ -6,17 +6,15 @@ using System.Reflection;
 
 namespace BlazorApp.Models
 {
-    public class DatabaseModel
+    public abstract class DatabaseModel<T>
     {
-        public static async Task<ModelList<T>> QueryAll<T>()
+        public static async Task<ModelList<T>> QueryAll()
         {
-            return await QueryBy<T>();
+            return await QueryBy();
         }
 
-        public static async Task<ModelList<T>> QueryBy<T>(params (string Key, object Value)[] parameters)
+        private static string GetTableName()
         {
-            var results = new ModelList<T>();
-
             string tableName = typeof(T).Name.ToLower();
             var classAttributes = typeof(T).GetCustomAttributes(false);
             var tableAttribute = classAttributes.OfType<Table>().FirstOrDefault();
@@ -24,20 +22,28 @@ namespace BlazorApp.Models
             {
                 tableName = ((Table)tableAttribute).TableName;
             }
+            return tableName;
+        }
 
-            string query = $"SELECT * FROM {tableName}";
+        public static async Task<ModelList<T>> QueryBy(params (string Key, object Value)[] parameters)
+        {
+            var results = new ModelList<T>();
+
+            string tableName = GetTableName();
+            string queryParams = "";
 
             int paramCount = 0;
             foreach (var param in parameters)
             {
-                if (paramCount == 0) query += " WHERE";
-                else query += " AND";
+                if (paramCount == 0) queryParams += " WHERE";
+                else queryParams += " AND";
 
-                // To be changed later!
-                string test = (param.Value is string ? "'" : "");
-                query += $" {param.Key}={test}{param.Value}{test}";
+                string quote = (param.Value is string ? "'" : "");
+                queryParams += $" {param.Key}={quote}{param.Value}{quote}";
                 paramCount++;
             }
+
+            string query = $"SELECT * FROM {tableName}{queryParams};";
 
             using (var connection = DBService.Instance.GetConnection())
             using (var command = new NpgsqlCommand(query, connection))
@@ -70,6 +76,39 @@ namespace BlazorApp.Models
             }
 
             return results;
+        }
+
+        public static async Task BuildTable()
+        {
+            string tableName = GetTableName();
+            string tableColumns = "";
+
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            int propertyCount = 0;
+            foreach (var property in properties)
+            {
+                var attributes = property.GetCustomAttributes(false);
+                var sqlAttribute = attributes.OfType<SqlItem>().FirstOrDefault();
+                if (sqlAttribute != null)
+                {
+                    var sqlItem = (SqlItem)sqlAttribute;
+                    if (propertyCount > 0) tableColumns += ", ";
+                    tableColumns += $"{sqlItem.Name} {sqlItem.Sql}";
+                    propertyCount++;
+                }
+            }
+
+            string query = $"CREATE TABLE IF NOT EXISTS {tableName}({tableColumns});";
+
+            //using (var connection = DBService.Instance.GetConnection())
+            //using (var command = new NpgsqlCommand(query, connection))
+            //using (var reader = await command.ExecuteReaderAsync())
+            //{
+
+            //}
+
+            //Console.WriteLine(query);
         }
     }
 

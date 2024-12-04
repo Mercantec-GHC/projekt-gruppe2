@@ -1,11 +1,12 @@
-﻿@inject NavigationManager navigationManager
+﻿@using BlazorApp.Components.Pages
+
+@inject NavigationManager navigationManager
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)">
             <NotAuthorized>
                 @{
-                    // navigationManager.NavigateTo("/login", true);
                     var returnUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
                     navigationManager.NavigateTo($"/login?returnUrl={returnUrl}", true);
                 }
@@ -14,8 +15,8 @@
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
-        @{
-            navigationManager.NavigateTo("/login", true);
-        }
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <ErrorPage Status="404" />
+        </LayoutView>
     </NotFound>
 </Router>

@@ -19,7 +19,7 @@ namespace BlazorApp.Controllers
         [Route("api/auth/signin")]
         public async Task<ActionResult> SignInPost(SigninData value)
         {
-            ModelList<User> users = await BlazorApp.Models.User.QueryBy<User>(("email", value.Email));
+            ModelList<User> users = await BlazorApp.Models.User.QueryBy(("email", value.Email));
             User user = users.FirstOrDefault();
             if (user == null) return this.BadRequest();
 

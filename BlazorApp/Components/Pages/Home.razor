@@ -57,6 +57,6 @@ else
         {
             connectionStatus = $"Error: {ex.Message}";
         }
-        books = await Book.QueryAll<Book>();
+        books = await Book.QueryAll();
     }
 }
