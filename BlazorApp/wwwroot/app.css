@@ -2,6 +2,10 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+body {
+    margin-top: 56px !important;
+}
+
 a, .btn-link {
     color: #006bb7;
 }
@@ -42,9 +46,9 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
@@ -60,3 +64,27 @@ h1:focus {
     display: none;
 }
 
+.navbar-img {
+    height: 40px;
+    padding: 0;
+}
+
+.navbar-img > img {
+    height: 100%;
+}
+
+.navbar .dropdown-menu li + li {
+    margin-top: .125rem;
+}
+
+.navbar .dropdown-item {
+    border-radius: var(--bs-dropdown-border-radius);
+}
+
+.navbar .avatar-img {
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.navbar .avatar-img:hover {
+    box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
+}

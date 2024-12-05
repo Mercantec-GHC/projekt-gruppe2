@@ -45,6 +45,8 @@ namespace BlazorApp
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

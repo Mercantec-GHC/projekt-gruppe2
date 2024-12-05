@@ -3,7 +3,7 @@
 namespace BlazorApp.Models
 {
     [Table("users")]
-    public class User : DatabaseModel
+    public class User : DatabaseModel<User>
     {
         [SqlItem("id", "SERIAL PRIMARY KEY")]
         public int Id { get; set; }
