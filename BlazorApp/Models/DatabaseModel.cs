@@ -8,11 +8,6 @@ namespace BlazorApp.Models
 {
     public abstract class DatabaseModel<T>
     {
-        public static async Task<ModelList<T>> QueryAll()
-        {
-            return await QueryBy();
-        }
-
         private static string GetTableName()
         {
             string tableName = typeof(T).Name.ToLower();
@@ -23,6 +18,16 @@ namespace BlazorApp.Models
                 tableName = ((Table)tableAttribute).TableName;
             }
             return tableName;
+        }
+
+        public async Task Commit()
+        {
+            
+        }
+
+        public static async Task<ModelList<T>> QueryAll()
+        {
+            return await QueryBy();
         }
 
         public static async Task<ModelList<T>> QueryBy(params (string Key, object Value)[] parameters)
@@ -101,14 +106,12 @@ namespace BlazorApp.Models
 
             string query = $"CREATE TABLE IF NOT EXISTS {tableName}({tableColumns});";
 
-            //using (var connection = DBService.Instance.GetConnection())
-            //using (var command = new NpgsqlCommand(query, connection))
-            //using (var reader = await command.ExecuteReaderAsync())
-            //{
+            using (var connection = DBService.Instance.GetConnection())
+            using (var command = new NpgsqlCommand(query, connection))
+            using (var reader = await command.ExecuteReaderAsync())
+            {
 
-            //}
-
-            //Console.WriteLine(query);
+            }
         }
     }
 
