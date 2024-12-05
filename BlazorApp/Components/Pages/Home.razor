@@ -11,6 +11,8 @@
 <a> Uncover Worlds. Discover Deals.</a>
 
 <p>@connectionStatus</p> *@
+<button type="button" class="btn btn-primary me-3"> I want to buy! </button>
+<button type="button" class="btn btn-primary me-3"> I want to sell! </button>
 
 @* <SearchComponent SearchFilter="@searchFilter"  SearchBookCallback="HandleSearch"></SearchComponent> *@
 @if (!string.IsNullOrWhiteSpace(searchFilter))
@@ -22,8 +24,7 @@ else
     <BookComponent books="books" ></BookComponent>
 }
 
-<button type="button" class="btn btn-primary me-3"> I want to buy! </button>
-<button type="button" class="btn btn-primary me-3"> I want to sell! </button>
+
 
 @code 
 {
