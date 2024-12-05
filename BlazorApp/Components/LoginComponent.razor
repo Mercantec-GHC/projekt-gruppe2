@@ -1,0 +1,53 @@
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRunTime
+
+<EditForm FormName="Login" Model="this" OnSubmit="HandleLogin" id="loginForm">
+    <div class="mb-3">
+        <label for="loginInputEmail" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="loginInputEmail" />
+    </div>
+    <div class="mb-3">
+        <label for="loginInputPassword" class="form-label">Password</label>
+        <input type="password" class="form-control" id="loginInputPassword" />
+    </div>
+    <div class="mb-3" style="display:none;" id="loginFlashMessage">
+        <p class="text-danger">Incorrect Email or Password!</p>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+    @* <button class="btn btn-primary" type="button" disabled>
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span role="status">Login in...</span>
+    </button> *@
+</EditForm>
+
+@code {
+    private async void HandleLogin()
+    {
+        var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+        string email = await authModule.InvokeAsync<string>("getInputValue", "loginInputEmail");
+        string password = await authModule.InvokeAsync<string>("getInputValue", "loginInputPassword");
+        await authModule.InvokeVoidAsync("SignIn", email, password, GetReturnUrl());
+    }
+
+    private string GetReturnUrl()
+    {
+        var uriBuilder = new UriBuilder(NavigationManager.Uri);
+        var q = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        return $"/{q["returnUrl"]}" ?? uriBuilder.Path;
+    }
+
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+}

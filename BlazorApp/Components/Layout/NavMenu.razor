@@ -1,30 +1,219 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp</a>
+﻿@using System.Security.Claims;
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRunTime
+
+<!--
+<nav class="navbar navbar-expand-md">
+    <a class="navbar-brand ms-3" href="#">
+        <i class="bi bi-book"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav me-auto">
+        </div>
+        <div class="navbar-nav">
+            @* Books dropdown *@
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Books
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/paperback">Paperback</a></li>
+                    <li><a class="dropdown-item" href="/eBook">Ebook</a></li>
+                    <li><a class="dropdown-item" href="/audio book">Audio book</a></li>
+                </ul>
+            </div>
+
+            @* Bestsellers page  *@
+            <NavLink class="nav-item nav-link" href="/bestsellers">Bestsellers</NavLink>
+
+            @* Cart page *@
+            <NavLink class="nav-item nav-link fw-bold" href="/Cart">
+                <i class="bi bi-cart"></i>
+            </NavLink>
+      
+            @* Flag dropdown *@
+            <LanguageMenu />
+
+            <ThemeMenu />
+
+            @* Desktop view *@
+            <div class="d-none d-md-block">
+                <button type="button" class="btn btn-primary me-3">Log in</button>
+                <button type="button" class="btn btn-primary">Sign up</button>
+            </div>
+
+            @* phone view *@
+            <div class="d-block d-md-none">
+                <button type="button" class="navn-item nav-link">Log in</button>
+                <button type="button" class="navn-item nav-link">Register</button>
+            </div>
+        </div>
     </div>
-</div>
+</nav>
+-->
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom">
+    <div class="container-fluid">
+        @* <a class="navbar-brand" href="">Navbar</a> *@
+        <a class="navbar-brand" href="">
+            <i class="bi bi-book"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <div class="navbar-nav me-auto">
+                <div class="nav-item py-2 py-sm-1 col-12 col-sm-auto">
+                    <hr class="d-sm-none my-0 text-white-50">
+                </div>
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Home
+                    </NavLink>
+                </div>
+            </div>
+            <div class="navbar-nav">
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+                <!-- Books dropdown -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Books
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/paperback">Paperback</a></li>
+                        <li><a class="dropdown-item" href="/eBook">Ebook</a></li>
+                        <li><a class="dropdown-item" href="/audio book">Audio book</a></li>
+                    </ul>
+                </div>
+
+                <!-- Bestsellers page -->
+                <NavLink class="nav-item nav-link" href="/bestsellers">Bestsellers</NavLink>
+
+                <NavbarLine />
+
+                <NavLink class="nav-item nav-link" href="cart">
+                    <div class="d-inline-block d-sm-none">Cart</div>
+                    <i class="bi bi-cart d-none d-sm-inline-block"></i>
+                </NavLink>
+
+                <LanguageMenu />
+
+                <ThemeMenu />
+
+                @if (!IsLoginPage())
+                {
+                    <NavbarLine />
+                }
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="nav-item dropdown">
+                            <button class="nav-link py-lg-0 pe-lg-0" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @* @context.User.Identity?.Name *@
+                                <img id="userAvatar" src="images/no_avatar.png" height="40" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @* <li><h6 class="dropdown-header">Account</h6></li> *@
+                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)">Account</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="account">Settings</NavLink></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><button @onclick="handleLogout" class="dropdown-item">Logout</button></li>
+                            </ul>
+                        </div>
+                    </Authorized>
+                    <NotAuthorized>
+                        <!-- Button trigger login modal -->
+                        @if (!IsLoginPage())
+                        {
+                            <div class="nav-item">
+                                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    Login
+                                </button>
+                            </div>
+                        }
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
         </div>
+    </div>
+</nav>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+<!-- Offsets the Bodys top padding based on the Navbars height -->
+@* <script type="text/javascript">
+    document.body.style.paddingTop = document.getElementById("navbarMain").offsetHeight + "px";
+</script> *@
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+@if (!IsLoginPage())
+{
+    <AuthorizeView>
+        <NotAuthorized>
+            <!-- Login Modal -->
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <LoginComponent />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+}
 
+@code {
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        var navModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/navmenu.js");
+        await navModule.InvokeVoidAsync("attachHandlers");
+    }
+
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        // rerender component
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        // add to the NavigationManager event
+        NavigationManager.LocationChanged += HandleLocationChanged;
+
+    }
+
+    public void Dispose()
+    {
+        // remove from the NavigationManager event
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+    private string GetCurrentUrl()
+    {
+        var uriBuilder = new UriBuilder(NavigationManager.Uri);
+        return uriBuilder.Path;
+    }
+
+    private bool IsLoginPage()
+    {
+        return GetCurrentUrl() == "/login";
+    }
+
+    private async void handleLogout()
+    {
+        var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+        await authModule.InvokeVoidAsync("SignOut", "/");
+    }
+
+    private string GetUserPage(ClaimsPrincipal user)
+    {
+        var username = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        return $"u/{username}";
+    }
+}
