@@ -56,32 +56,12 @@
     --bs-form-invalid-border-color: #ea868f;
 }
 
-body {
-    margin-top: 56px !important;
-}
-
 .navbar .dropdown-menu {
     --bs-dropdown-padding-x: 0.25rem;
     --bs-dropdown-padding-y: 0.25rem;
     --bs-dropdown-link-active-bg: var(--bs-primary);
     --bs-dropdown-min-width: 0;
     border-radius: .5rem;
-}
-
-.navbar .dropdown-menu li + li {
-    margin-top: .125rem;
-}
-
-.navbar .dropdown-item {
-    border-radius: var(--bs-dropdown-border-radius);
-}
-
-.navbar .avatar-img {
-    transition: box-shadow 0.1s ease-in-out;
-}
-
-.navbar .avatar-img:hover {
-    box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
 }
 
 [data-bs-theme=oled] .btn-close {

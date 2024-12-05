@@ -3,62 +3,8 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRunTime
 
-<!--
-<nav class="navbar navbar-expand-md">
-    <a class="navbar-brand ms-3" href="#">
-        <i class="bi bi-book"></i>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav me-auto">
-        </div>
-        <div class="navbar-nav">
-            @* Books dropdown *@
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Books
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/paperback">Paperback</a></li>
-                    <li><a class="dropdown-item" href="/eBook">Ebook</a></li>
-                    <li><a class="dropdown-item" href="/audio book">Audio book</a></li>
-                </ul>
-            </div>
-
-            @* Bestsellers page  *@
-            <NavLink class="nav-item nav-link" href="/bestsellers">Bestsellers</NavLink>
-
-            @* Cart page *@
-            <NavLink class="nav-item nav-link fw-bold" href="/Cart">
-                <i class="bi bi-cart"></i>
-            </NavLink>
-      
-            @* Flag dropdown *@
-            <LanguageMenu />
-
-            <ThemeMenu />
-
-            @* Desktop view *@
-            <div class="d-none d-md-block">
-                <button type="button" class="btn btn-primary me-3">Log in</button>
-                <button type="button" class="btn btn-primary">Sign up</button>
-            </div>
-
-            @* phone view *@
-            <div class="d-block d-md-none">
-                <button type="button" class="navn-item nav-link">Log in</button>
-                <button type="button" class="navn-item nav-link">Register</button>
-            </div>
-        </div>
-    </div>
-</nav>
--->
-
 <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom">
     <div class="container-fluid">
-        @* <a class="navbar-brand" href="">Navbar</a> *@
         <a class="navbar-brand" href="">
             <i class="bi bi-book"></i>
         </a>
@@ -71,34 +17,27 @@
                     <hr class="d-sm-none my-0 text-white-50">
                 </div>
                 <div class="nav-item">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Home
+                    <NavLink class="nav-link fw-bold" href="books">
+                        <span class="bi bi-book-half" aria-hidden="true"></span> Books
                     </NavLink>
                 </div>
             </div>
             <div class="navbar-nav">
 
-                <!-- Books dropdown -->
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Books
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/paperback">Paperback</a></li>
-                        <li><a class="dropdown-item" href="/eBook">Ebook</a></li>
-                        <li><a class="dropdown-item" href="/audio book">Audio book</a></li>
-                    </ul>
-                </div>
-
-                <!-- Bestsellers page -->
-                <NavLink class="nav-item nav-link" href="/bestsellers">Bestsellers</NavLink>
-
                 <NavbarLine />
 
-                <NavLink class="nav-item nav-link" href="cart">
-                    <div class="d-inline-block d-sm-none">Cart</div>
-                    <i class="bi bi-cart d-none d-sm-inline-block"></i>
-                </NavLink>
+                <AuthorizeView>
+                    <Authorized>
+
+                        <NavLink class="nav-item nav-link" href="cart">
+                            <div class="d-inline-block d-sm-none fw-bold">Cart</div>
+                            <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
+                        </NavLink>
+
+                        <MessageMenu />
+
+                    </Authorized>
+                </AuthorizeView>
 
                 <LanguageMenu />
 
@@ -111,14 +50,18 @@
                 <AuthorizeView>
                     <Authorized>
                         <div class="nav-item dropdown">
-                            <button class="nav-link py-lg-0 pe-lg-0" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @* @context.User.Identity?.Name *@
-                                <img id="userAvatar" src="images/no_avatar.png" height="40" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
+                            <button class="nav-link navbar-img" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img id="userAvatar" src="images/no_avatar.png" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @* <li><h6 class="dropdown-header">Account</h6></li> *@
                                 <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)">Account</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="orders">Orders</NavLink></li>
                                 <li><NavLink class="dropdown-item" href="account">Settings</NavLink></li>
+                                @if (IsUserAdmin(context.User))
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><NavLink class="dropdown-item" href="admin">Admin</NavLink></li>
+                                }
                                 <li><hr class="dropdown-divider"></li>
                                 <li><button @onclick="handleLogout" class="dropdown-item">Logout</button></li>
                             </ul>
@@ -129,7 +72,7 @@
                         @if (!IsLoginPage())
                         {
                             <div class="nav-item">
-                                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <button type="button" class="nav-link fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     Login
                                 </button>
                             </div>
@@ -140,11 +83,6 @@
         </div>
     </div>
 </nav>
-
-<!-- Offsets the Bodys top padding based on the Navbars height -->
-@* <script type="text/javascript">
-    document.body.style.paddingTop = document.getElementById("navbarMain").offsetHeight + "px";
-</script> *@
 
 @if (!IsLoginPage())
 {
@@ -183,14 +121,14 @@
 
     protected override void OnInitialized()
     {
-        // add to the NavigationManager event
+        // add the event to the NavigationManager
         NavigationManager.LocationChanged += HandleLocationChanged;
 
     }
 
     public void Dispose()
     {
-        // remove from the NavigationManager event
+        // remove the event from the NavigationManager
         NavigationManager.LocationChanged -= HandleLocationChanged;
     }
 
@@ -215,5 +153,11 @@
     {
         var username = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         return $"u/{username}";
+    }
+
+    private bool IsUserAdmin(ClaimsPrincipal user)
+    {
+        var role = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+        return role == "admin";
     }
 }

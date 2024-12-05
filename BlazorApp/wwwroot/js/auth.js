@@ -1,7 +1,12 @@
 ﻿export function SignIn(email, password, redirect) {
+    let loginSpinner = document.getElementById("loginSpinner");
+    let loginText = document.getElementById("loginText");
 
-    var url = "/api/auth/signin";
-    var xhr = new XMLHttpRequest();
+    loginText.innerHTML = "Login in...";
+    loginSpinner.classList.remove("d-none");
+
+    let url = "/api/auth/signin";
+    let xhr = new XMLHttpRequest();
 
     // Initialization
     xhr.open("POST", url);
@@ -17,13 +22,15 @@
                     location.replace(redirect);
             }
             else if (xhr.status == 400) {
+                loginText.innerHTML = "Log in";
+                loginSpinner.classList.add("d-none");
                 showLoginFlash();
             }
         }
     };
 
     // Data to send
-    var data = {
+    let data = {
         email: email,
         password: password
     };
@@ -33,8 +40,8 @@
 };
 
 export function SignOut(redirect) {
-    var url = "/api/auth/signout";
-    var xhr = new XMLHttpRequest();
+    let url = "/api/auth/signout";
+    let xhr = new XMLHttpRequest();
 
     // Initialization
     xhr.open("POST", url);
