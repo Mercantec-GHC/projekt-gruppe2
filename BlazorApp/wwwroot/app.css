@@ -88,3 +88,11 @@ h1:focus {
 .navbar .avatar-img:hover {
     box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
 }
+
+.notification-counter {
+    position: absolute;
+    border-radius: 360px;
+    padding: 3px;
+    z-index: 100;
+    right: 0;
+}

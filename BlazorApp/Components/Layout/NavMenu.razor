@@ -30,8 +30,14 @@
                     <Authorized>
 
                         <NavLink class="nav-item nav-link" href="cart">
-                            <div class="d-inline-block d-sm-none fw-bold">Cart</div>
                             <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
+                            @* <div style="position: relative; width: 0; height: 0">
+                                <div style="position: absolute; left: 24px; top: -32px">
+                                    <span class="badge bg-danger notification-counter d-none d-sm-inline-block">7</span>
+                                </div>
+                            </div> *@
+                            <span class="d-inline-block d-sm-none fw-bold">Cart</span>
+                            @* <span class="d-inline-block d-sm-none">(7)</span> *@
                         </NavLink>
 
                         <MessageMenu />
@@ -39,7 +45,7 @@
                     </Authorized>
                 </AuthorizeView>
 
-                <LanguageMenu />
+                <LanguageMenu/>
 
                 <ThemeMenu />
 
@@ -54,13 +60,13 @@
                                 <img id="userAvatar" src="images/no_avatar.png" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)">Account</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="orders">Orders</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="account">Settings</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">Account</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Settings</NavLink></li>
                                 @if (IsUserAdmin(context.User))
                                 {
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><NavLink class="dropdown-item" href="admin">Admin</NavLink></li>
+                                    <li><NavLink class="dropdown-item" href="account/administration" Match="NavLinkMatch.All">Admin</NavLink></li>
                                 }
                                 <li><hr class="dropdown-divider"></li>
                                 <li><button @onclick="handleLogout" class="dropdown-item">Logout</button></li>
@@ -72,9 +78,11 @@
                         @if (!IsLoginPage())
                         {
                             <div class="nav-item">
-                                <button type="button" class="nav-link fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <button type="button" class="nav-link fw-bold d-inline-block pe-0" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     Login
                                 </button>
+                                <span class="navbar-text fw-bold d-none d-sm-inline-block">/</span>
+                                <NavLink class="nav-link fw-bold d-block d-sm-inline-block ps-0" href="register" Match="NavLinkMatch.All">Register</NavLink>
                             </div>
                         }
                     </NotAuthorized>

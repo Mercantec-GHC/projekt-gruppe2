@@ -11,7 +11,7 @@ namespace BlazorApp.Controllers
     {
         private static readonly AuthenticationProperties COOKIE_EXPIRES = new AuthenticationProperties()
         {
-            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30), //Testing needed!
             //IsPersistent = true,
         };
 
@@ -55,6 +55,13 @@ namespace BlazorApp.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return this.Ok();
+        }
+
+        [HttpGet]
+        [Route("/access-denied")]
+        public async Task<ActionResult> AccessDenied()
+        {
+            return this.Redirect("/");
         }
     }
 
