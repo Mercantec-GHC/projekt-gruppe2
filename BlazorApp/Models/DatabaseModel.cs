@@ -1,8 +1,10 @@
 ﻿using BlazorApp.Attributes;
 using BlazorApp.Service;
 using Npgsql;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
 
 namespace BlazorApp.Models
 {
@@ -20,9 +22,84 @@ namespace BlazorApp.Models
             return tableName;
         }
 
+        private static string FormatSql(object input)
+        {
+            bool isNumeric = input is int ||
+                            input is double ||
+                            input is float ||
+                            input is long ||
+                            input is decimal;
+
+            return ((isNumeric || input is bool) ? $"{input}" : (input is null ? "NULL" : $"'{input}'"));
+        }
+
         public async Task Commit()
         {
-            
+            string tableName = GetTableName();
+            string keys = "";
+            string insert = "";
+            string values = "";
+            string update = "";
+
+            var properties = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            var primaryKey = "";
+            var primaryValue = "";
+
+            foreach (var property in properties)
+            {
+                var attributes = property.GetCustomAttributes(false);
+                var sqlAttribute = attributes.OfType<SqlItem>().FirstOrDefault();
+                if (sqlAttribute != null)
+                {
+                    var sqlItem = (SqlItem)sqlAttribute;
+                    if (sqlItem.Sql.Contains("PRIMARY KEY"))
+                    {
+                        primaryKey = sqlItem.Name;
+                        primaryValue = FormatSql(property.GetValue(this));
+
+                        if (keys.Length > 0) keys += ", ";
+                        keys += $"{sqlItem.Name}";
+                    }
+                    if (sqlItem.Sql.Contains("UNIQUE"))
+                    {
+                        if (keys.Length > 0) keys += ", ";
+                        keys += $"{sqlItem.Name}";
+                    }
+                    if (!sqlItem.Sql.Contains("SERIAL"))
+                    {
+                        if (insert.Length > 0) insert += ", ";
+                        if (values.Length > 0) values += ", ";
+                        if (update.Length > 0) update += ", ";
+
+                        var value = FormatSql(property.GetValue(this));
+
+                        insert += $"{sqlItem.Name}";
+                        values += $"{value}";
+                        update += $"{sqlItem.Name}={value}";
+                    }
+                }
+            }
+
+            string query = $"DO $$"
+                + $" BEGIN"
+                + $" UPDATE {tableName} SET {update}"
+                + $" WHERE {primaryKey} = {primaryValue};"
+                + $" IF FOUND"
+                + $" THEN RAISE NOTICE 'Row updated';"
+                + $" ELSE"
+                + $" INSERT INTO {tableName}({insert})"
+                + $" VALUES({values});"
+                + $" RAISE NOTICE 'Row inserted';"
+                + $" END IF;"
+                + $" END $$;";
+
+            using (var connection = DBService.Instance.GetConnection())
+            using (var command = new NpgsqlCommand(query, connection))
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+
+            }
         }
 
         public static async Task<ModelList<T>> QueryAll()
@@ -43,8 +120,8 @@ namespace BlazorApp.Models
                 if (paramCount == 0) queryParams += " WHERE";
                 else queryParams += " AND";
 
-                string quote = (param.Value is string ? "'" : "");
-                queryParams += $" {param.Key}={quote}{param.Value}{quote}";
+                //string quote = (param.Value is string ? "'" : "");
+                queryParams += $" {param.Key}={FormatSql(param.Value)}";
                 paramCount++;
             }
 

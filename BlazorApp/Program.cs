@@ -28,6 +28,7 @@ namespace BlazorApp
                 options.Cookie.Name = "auth_token";
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
                 options.LoginPath = "/login";
+                options.AccessDeniedPath = "/access-denied";
             });
 
             builder.Services.AddCascadingAuthenticationState();

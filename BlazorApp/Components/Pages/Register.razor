@@ -1,15 +1,13 @@
-﻿@page "/login"
+﻿@page "/register"
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView>
     <NotAuthorized>
 
-        <PageTitle>Login</PageTitle>
+        <PageTitle>Register</PageTitle>
 
-        <h3>Login</h3>
-
-        <LoginComponent />
+        <h3>Register</h3>
 
     </NotAuthorized>
 </AuthorizeView>

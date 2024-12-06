@@ -89,6 +89,7 @@ h1:focus {
 .navbar .avatar-img:hover {
     box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
 }
+
 /*Home Page*/
 .content {
     display: flex;
@@ -111,6 +112,7 @@ h1:focus {
     justify-content: center;
     align-items: center;
 }
+
 .hero-text {
     font-size: 18vw;
     font-weight: bold;
@@ -121,9 +123,18 @@ h1:focus {
     text-align: center;
     margin: 0;
 }
+
 @media (max-width: 1200px) {
     .banner {
         height: 400px;
     }
     /*Home Page End*/
+}
+
+.notification-counter {
+    position: absolute;
+    border-radius: 360px;
+    padding: 3px;
+    z-index: 100;
+    right: 0;
 }
