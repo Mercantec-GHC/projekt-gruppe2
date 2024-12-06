@@ -2,6 +2,7 @@
 
 namespace BlazorApp.Models
 {
+    [Table("categories")]
     public class Categories : DatabaseModel<Categories>
     {
         [SqlItem("id", "SERIAL PRIMARY KEY")]
@@ -9,5 +10,10 @@ namespace BlazorApp.Models
 
         [SqlItem("name", "TEXT NOT NULL")]
         public string Name { get; set; }
-    }
+
+		public async Task<ModelList<Book>> GetBooksAsync()
+		{
+			return await Book.QueryBy(("category_id", Id));
+		}
+	}
 }
