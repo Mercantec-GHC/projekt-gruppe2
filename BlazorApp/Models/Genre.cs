@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorApp.Attributes;
 
 namespace BlazorApp.Models
 {
-	public class Genre
+	[Table("genre")]
+	public class Genre : DatabaseModel<Genre>
 	{
-		[Key]
-		public int GenreId { get; set; }
-		public string GenreName { get; set; } = string.Empty;
+		[SqlItem("id", "SERIAL PRIMARY KEY")]
+		public int Id { get; set; }
+
+		[SqlItem("name", "TEXT NOT NULL")]
+		public string Name { get; set; }
 	}
 }
