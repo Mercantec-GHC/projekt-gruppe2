@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using BlazorApp.Models;
+using Npgsql;
 namespace BlazorApp.Service
 {
 	public class DBService
@@ -12,6 +13,9 @@ namespace BlazorApp.Service
 			_dbConnectionString = dbConnectionString;
 			Instance = this;
 
+            User.BuildTable();
+            Categories.BuildTable();
+			Book.BuildTable();
         }
 
 		public NpgsqlConnection GetConnection()

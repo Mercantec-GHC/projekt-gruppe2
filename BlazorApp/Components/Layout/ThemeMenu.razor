@@ -1,0 +1,15 @@
+﻿<div class="nav-item dropdown">
+    <button class="nav-link dropdown-toggle" id="navbarDropdownMenuTheme" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="d-inline-block d-sm-none fw-bold">Theme</div>
+        <i class="bi bi-circle-half d-none d-sm-inline-block" id="theme_icon"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuTheme">
+        <li><button class="dropdown-item" onclick="changeTheme('auto')"><i class="bi bi-circle-half me-2 opacity-50"></i>System</button></li>
+        <li><button class="dropdown-item" onclick="changeTheme('light')"><i class="bi bi-sun-fill me-2 opacity-50"></i>Light</button></li>
+        <li><button class="dropdown-item" onclick="changeTheme('dark')"><i class="bi bi-moon-stars-fill me-2 opacity-50"></i>Dark</button></li>
+        <li><button class="dropdown-item" onclick="changeTheme('oled')"><i class="bi bi-lightbulb-off-fill me-2 opacity-50"></i>Oled</button></li>
+    </ul>
+    <script>
+        changeTheme(getCookie("theme"));
+    </script>
+</div>

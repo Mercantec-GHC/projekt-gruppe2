@@ -1,63 +1,30 @@
-﻿@page "/"
+@page "/"
 
 @using BlazorApp.Models
 @using BlazorApp.Service
-@inject DBService DbService
 
-@* <PageTitle>Home</PageTitle>
+<PageTitle>Home</PageTitle>
+<div class="content">
 
-<h1>BookVers</h1>
+	<div class="banner">
+		<div class="hero-text">Book</div>
+		<div class="hero-text">Verse</div>
+	</div>
 
-<a> Uncover Worlds. Discover Deals.</a>
+	<div style="margin-top: 50px">
+		<h1>Uncover Worlds. Discover Deals.</h1>
+		<div style="margin-top: 50px">
+			<button @onclick="NavigateToUrl" type="button" class="btn btn-primary me-3">I want to buy</button>
+			<button type="button" class="btn btn-primary">I want to sell</button>
+		</div>
+	</div>
+</div>
+@code {
+	[Inject]
+	private NavigationManager Navigation { get; set; }
 
-<p>@connectionStatus</p> *@
-<button type="button" class="btn btn-primary me-3"> I want to buy! </button>
-<button type="button" class="btn btn-primary me-3"> I want to sell! </button>
-
-@* <SearchComponent SearchFilter="@searchFilter"  SearchBookCallback="HandleSearch"></SearchComponent> *@
-@if (!string.IsNullOrWhiteSpace(searchFilter))
-{
-    <BookComponent books="filteredBooks"></BookComponent>
-}
-else
-{
-    <BookComponent books="books" ></BookComponent>
-}
-
-
-
-@code 
-{
-    private string connectionStatus;
-
-    private ModelList<Book> books = new ModelList<Book>();
-    private ModelList<Book> filteredBooks = new ModelList<Book>();
-
-    private string searchFilter = "";
-
-    private void HandleSearch(string searchFilter)
-    {
-        this.searchFilter = searchFilter;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            using var connection = DbService.GetConnection();
-            if (connection.State == System.Data.ConnectionState.Open)
-            {
-                connectionStatus = "Database connection successful!"; 
-            }
-            else
-            {
-                connectionStatus = "Failed to connect to the database.";
-            }
-        }
-        catch (Exception ex)
-        {
-            connectionStatus = $"Error: {ex.Message}";
-        }
-        books = await Book.QueryAll<Book>();
-    }
+	private void NavigateToUrl()
+	{
+		Navigation.NavigateTo("https://localhost:7130/books");
+	}
 }

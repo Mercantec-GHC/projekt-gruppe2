@@ -3,7 +3,7 @@
 namespace BlazorApp.Models
 {
     [Table("users")]
-    public class User : DatabaseModel
+    public class User : DatabaseModel<User>
     {
         [SqlItem("id", "SERIAL PRIMARY KEY")]
         public int Id { get; set; }
@@ -22,6 +22,9 @@ namespace BlazorApp.Models
 
         [SqlItem("password", "TEXT NOT NULL")]
         public string Password { get; set; }
+
+        [SqlItem("role", "TEXT NOT NULL")]
+        public string Role { get; set; }
 
         [SqlItem("created_at", "DATE NOT NULL")]
         public DateTime CreatedAt { get; set; }
