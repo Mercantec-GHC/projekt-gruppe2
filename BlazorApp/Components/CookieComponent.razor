@@ -1,5 +1,46 @@
-﻿<div class="cookie-box">
-	<p>This website use cookies to help you have a superior and more relevant browsing experience on the website.</p>
-	<button class="button" id="acceptBtn">Accept</button>
-	<button class="button" id="declineBtn">Decline</button>
-</div>
+﻿@inject IJSRuntime JSRuntime
+
+
+@* loads the cookie accept box for useres that do not have a cookie *@
+@if (!hasCookie)
+{
+	<div class="cookie-box">
+		<p>This website uses cookies to help you have a better browsing experience on the website.</p>
+		<button class="button" @onclick=AcceptClicked>Accept</button>
+		<button class="button" @onclick=DeclinedClicked>Decline</button>
+	</div>
+}
+
+@code{
+	// set to true to not show cookie box before cookie is found
+	private bool hasCookie = true;
+
+	protected override async void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+			string cookie = await cookieModule.InvokeAsync<string>("getCookie", "cookies_accepted");
+			hasCookie = cookie.Length > 0;
+			StateHasChanged();
+		}
+	}
+
+	private async Task AcceptClicked()
+	{
+		await CookiesAccepted(true);
+	}
+
+	private async Task DeclinedClicked()
+	{
+		await CookiesAccepted(false);
+	}
+
+	private async Task CookiesAccepted(bool accepted)
+	{
+		var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+		await cookieModule.InvokeVoidAsync("setCookie", "cookies_accepted", accepted, 400);
+		hasCookie = true;
+		StateHasChanged();
+	}
+}
