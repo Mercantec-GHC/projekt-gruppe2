@@ -64,7 +64,7 @@
 
 
 @code {
-	private ModelList<Categories> categories = new ModelList<Categories>();
+	private ModelList<Category> categories = new ModelList<Category>();
 	private ModelList<Book> books = new ModelList<Book>();
 	private ModelList<Book> filteredBooks = new ModelList<Book>();
 	private string connectionStatus;
@@ -78,11 +78,11 @@
 	protected override async Task OnInitializedAsync()
 	{
 		books = await Book.QueryAll();
-		categories = await Categories.QueryAll();
+		categories = await Category.QueryAll();
 	}
-	private Categories selectedCategory;
+	private Category selectedCategory;
 
-	private async Task OnCategoryClick(Categories category)
+	private async Task OnCategoryClick(Category category)
 	{
 		selectedCategory = category;
 		try

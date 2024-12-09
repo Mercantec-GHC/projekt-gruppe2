@@ -14,6 +14,7 @@ namespace BlazorApp.Models
 		[SqlItem("author", "TEXT NOT NULL")]
 		public string Author { get; set; }
 
+		// Skal rettes til lenght.
 		[SqlItem("genre", "TEXT NOT NULL")]
 		public string PageCount { get; set; }
 

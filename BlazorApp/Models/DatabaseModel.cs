@@ -120,7 +120,6 @@ namespace BlazorApp.Models
                 if (paramCount == 0) queryParams += " WHERE";
                 else queryParams += " AND";
 
-                //string quote = (param.Value is string ? "'" : "");
                 queryParams += $" {param.Key}={FormatSql(param.Value)}";
                 paramCount++;
             }

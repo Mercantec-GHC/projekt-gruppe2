@@ -4,10 +4,12 @@
 @* loads the cookie accept box for useres that do not have a cookie *@
 @if (!hasCookie)
 {
-	<div class="cookie-box">
-		<p>This website uses cookies to help you have a better browsing experience on the website.</p>
-		<button class="button" @onclick=AcceptClicked>Accept</button>
-		<button class="button" @onclick=DeclinedClicked>Decline</button>
+	<div class="fixed-bottom py-3 bg-dark border-top text-light">
+		<div class="container">
+			<p>This website uses cookies to help you have a better browsing experience on the website.</p>
+			<button class="button" @onclick=AcceptClicked>Accept</button>
+			<button class="button" @onclick=DeclinedClicked>Decline</button>
+		</div>
 	</div>
 }
 
