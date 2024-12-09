@@ -4,10 +4,10 @@
 @* loads the cookie accept box for useres that do not have a cookie *@
 @if (!hasCookie)
 {
-	<div class="cookie-box">
-		<p>This website uses cookies to help you have a better browsing experience on the website.</p>
-		<button class="button" @onclick=AcceptClicked>Accept</button>
-		<button class="button" @onclick=DeclinedClicked>Decline</button>
+	<div class="cookie-box row justify-content-end">
+		<a>This website uses cookies to help you have a better browsing experience on the website.</a>
+		<button class="button col-1" @onclick=AcceptClicked>Accept</button>
+		<button class="button col-1" @onclick=DeclinedClicked>Decline</button>
 	</div>
 }
 
