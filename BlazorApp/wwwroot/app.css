@@ -3,13 +3,18 @@ html, body {
 }
 
 body {
-    margin-top: 56px !important;
+    padding-top: 56px !important;
 }
-footer {
+
+/*main > .container {
+    padding: 72px 1px 0;
+}*/
+
+/*footer {
     margin-top: 10%; 
     text-align: center;
     padding: 10px;
-}
+}*/
 
 a, .btn-link {
     color: #006bb7;
@@ -137,4 +142,29 @@ h1:focus {
     padding: 3px;
     z-index: 100;
     right: 0;
+}
+
+.card-filter {
+    border-radius: 0;
+    border: 0;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
+}
+
+.d-filter {
+    display: none;
+}
+
+@media only screen and (min-width : 1730px) {
+    .card-filter {
+        position: fixed;
+        width: 192px;
+        transform: translate(-206px, 0px);
+        border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+        border-radius: var(--bs-card-border-radius);
+        box-shadow: var(--bs-box-shadow) !important;
+    }
+
+    .d-filter {
+        display: block;
+    }
 }
