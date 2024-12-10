@@ -2,22 +2,22 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+body {
+    padding-top: 56px !important;
+}
+
 a, .btn-link {
     color: #006bb7;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #696969;
+    border-color: #696969;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.content {
-    padding-top: 1.1rem;
 }
 
 h1:focus {
@@ -42,20 +42,109 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
 
-.cookie-box{
-    position: fixed;
-    width: 100%;
-    height: 100px;
-    bottom: 0;
-    left: 0;
-    background-color: aqua;
+.navbar-img {
+    height: 40px;
+    padding: 0;
 }
 
+.navbar-img > img {
+    height: 100%;
+}
+
+.navbar .dropdown-menu li + li {
+    margin-top: .125rem;
+}
+
+.navbar .dropdown-item {
+    border-radius: var(--bs-dropdown-border-radius);
+}
+
+.navbar .avatar-img {
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.navbar .avatar-img:hover {
+    box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
+}
+
+/*Home Page*/
+.content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center; /* Ensure content is centered horizontally */
+    padding: 0 20px; /* Add horizontal padding for better spacing on small screens */
+}
+
+.banner {
+    border: 20px solid transparent;
+    border-image-source: url('/images/hero_image.png');
+    background-color: transparent;
+    border-image-slice: 30;
+    padding: 10px;
+    width: 100%;
+    max-width: 1600px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-text {
+    font-size: 18vw;
+    font-weight: bold;
+    background-image: url('/images/hero_image.png');
+    background-size: contain;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: 0;
+}
+
+@media (max-width: 1200px) {
+    .banner {
+        height: 400px;
+    }
+    /*Home Page End*/
+}
+
+.notification-counter {
+    position: absolute;
+    border-radius: 360px;
+    padding: 3px;
+    z-index: 100;
+    right: 0;
+}
+
+.card-filter {
+    border-radius: 0;
+    border: 0;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
+}
+
+.d-filter {
+    display: none;
+}
+
+@media only screen and (min-width : 1730px) {
+    .card-filter {
+        position: fixed;
+        width: 192px;
+        transform: translate(-206px, 0px);
+        border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+        border-radius: var(--bs-card-border-radius);
+        box-shadow: var(--bs-box-shadow) !important;
+    }
+
+    .d-filter {
+        display: block;
+    }
+}

@@ -1,20 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
-<NavMenu />
-<div class="page">
-    
+<header>
+    <NavMenu />
+</header>
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<main class="flex-shrink-0 py-3">
 
-<CookieComponent />
+    <article class="container-md px-sm-4 px-md-5">
+        @Body
+    </article>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+    <CookieComponent />
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-dark border-top">
+    <Footer />
+</footer>

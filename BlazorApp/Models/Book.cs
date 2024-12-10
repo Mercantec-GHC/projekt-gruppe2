@@ -3,9 +3,8 @@
 namespace BlazorApp.Models
 {
 	[Table("books")]
-	public class Book : DatabaseModel
+	public class Book : DatabaseModel<Book>
 	{
-
 		[SqlItem("id", "SERIAL PRIMARY KEY")]
 		public int Id { get; set; }
 
@@ -15,6 +14,7 @@ namespace BlazorApp.Models
 		[SqlItem("author", "TEXT NOT NULL")]
 		public string Author { get; set; }
 
+		// Skal rettes til lenght.
 		[SqlItem("genre", "TEXT NOT NULL")]
 		public string PageCount { get; set; }
 

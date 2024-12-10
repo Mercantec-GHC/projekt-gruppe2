@@ -1,0 +1,38 @@
+﻿@page "/account/administration"
+@using BlazorApp.Models;
+@attribute [Authorize(Roles = "admin")]
+
+@* <button type="button" class="btn btn-primary" @onclick=TestButton>
+    Test Button!
+</button> *@
+
+@foreach(User user in users)
+{
+    <h1>@user.Id: @user.Username - @user.CreatedAt.ToShortDateString()</h1>
+}
+
+@code {
+    private ModelList<User> users = new ModelList<User>();
+
+    private async Task TestButton()
+    {
+        // User user = new User()
+        // {
+        //     Id = 33,
+        //     FirstName = "Nikolaj",
+        //     LastName = "Have",
+        //     Email = "nhave06@gmail.com",
+        //     Username = "nhave",
+        //     Password = BCrypt.Net.BCrypt.EnhancedHashPassword("Qwerty123", 13),
+        //     Role = "admin",
+        //     CreatedAt = DateTime.UtcNow
+        // };
+        // await user.Commit();
+        // users = await User.QueryAll();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await User.QueryAll();
+    }
+}

@@ -1,0 +1,20 @@
+﻿@page "/error/{status:int}"
+
+<PageTitle>@GetStatusMessage()</PageTitle>
+
+
+<h1>@GetStatusMessage()</h1>
+
+@code {
+    [Parameter]
+    public int Status { get; set; }
+
+    private string GetStatusMessage()
+    {
+        if (Status == 404)
+        {
+            return $"{Status} Page not Found.";
+        }
+        return $"{Status}";
+    }
+}
