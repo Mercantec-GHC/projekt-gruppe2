@@ -4,7 +4,7 @@
 @inject IJSRuntime JSRunTime
 
 <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom shadow">
-    <div class="container-fluid container-xxl">
+    <div class="container">
         <a class="navbar-brand" href="">
             <i class="bi bi-book"></i>
         </a>
@@ -54,10 +54,8 @@
 
                 <ThemeMenu />
 
-                @if (!IsLoginPage())
-                {
-                    <NavbarLine />
-                }
+                <NavbarLine />
+
                 <AuthorizeView>
                     <Authorized>
                         <div class="nav-item dropdown">
@@ -83,13 +81,17 @@
                         @if (!IsLoginPage())
                         {
                             <div class="nav-item">
-                                <button type="button" class="nav-link fw-bold d-inline-block pe-0" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <button type="button" class="nav-link fw-bold d-inline-block" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     Login
                                 </button>
+                            </div>
+                            <div class="nav-item">
                                 <span class="navbar-text fw-bold d-none d-sm-inline-block">/</span>
-                                <NavLink class="nav-link fw-bold d-block d-sm-inline-block ps-0" href="register" Match="NavLinkMatch.All">Register</NavLink>
                             </div>
                         }
+                        <div class="nav-item">
+                            <NavLink class="nav-link fw-bold d-block d-sm-inline-block" href="register" Match="NavLinkMatch.All">Register</NavLink>
+                        </div>
                     </NotAuthorized>
                 </AuthorizeView>
             </div>
@@ -153,7 +155,8 @@
 
     private bool IsLoginPage()
     {
-        return GetCurrentUrl() == "/login";
+        string url = GetCurrentUrl();
+        return url == "/login" || url == "/register";
     }
 
     private async void handleLogout()

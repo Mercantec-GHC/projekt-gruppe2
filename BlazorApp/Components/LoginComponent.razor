@@ -2,30 +2,64 @@
 @inject IJSRuntime JSRunTime
 
 <EditForm FormName="Login" Model="this" OnSubmit="HandleLogin" id="loginForm">
-    <div class="mb-3">
-        <label for="loginInputEmail" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="loginInputEmail" required />
-    </div>
-    <div class="mb-3">
-        <label for="loginInputPassword" class="form-label">Password</label>
-        <input type="password" class="form-control" id="loginInputPassword" required />
-    </div>
-    <div class="mb-3" style="display:none;" id="loginFlashMessage">
-        <p class="text-danger">Incorrect Email or Password!</p>
-    </div>
-    <button type="submit" class="btn btn-primary" style="width:120px;">
-        <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
-        <span id="loginText" role="status">Log in</span>
-    </button>
-    <NavLink class="btn btn-link d-inline-block" href="register">Register</NavLink>
+    
+    @if (UseCard)
+    {
+        <div class="card shadow">
+            <h1 class="card-header">Login</h1>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="loginInputEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="loginInputEmail" required />
+                </div>
+                <div class="mb-3">
+                    <label for="loginInputPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginInputPassword" required />
+                </div>
+                <div class="mb-3" style="display:none;" id="loginFlashMessage">
+                    <p class="text-danger">Incorrect Email or Password!</p>
+                </div>
+            </div>
+            <div class="card-footer text-muted py-3">
+                <button type="submit" class="btn btn-primary" style="width:120px;">
+                    <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                    <span id="loginText" role="status">Log in</span>
+                </button>
+                <a class="btn btn-link d-inline-block" href="register">Register</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="mb-3">
+            <label for="loginInputEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="loginInputEmail" required />
+        </div>
+        <div class="mb-3">
+            <label for="loginInputPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="loginInputPassword" required />
+        </div>
+        <div class="mb-3" style="display:none;" id="loginFlashMessage">
+            <p class="text-danger">Incorrect Email or Password!</p>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:120px;">
+            <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+            <span id="loginText" role="status">Log in</span>
+        </button>
+        <a class="btn btn-link d-inline-block" href="register">Register</a>
+    }
+
 </EditForm>
 
 @code {
+    [Parameter]
+    public bool UseCard { get; set; } = false;
+
     private async void HandleLogin()
     {
         var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
-        string email = await authModule.InvokeAsync<string>("getInputValue", "loginInputEmail");
-        string password = await authModule.InvokeAsync<string>("getInputValue", "loginInputPassword");
+        string email = await authModule.InvokeAsync<string>("GetInputValue", "loginInputEmail");
+        string password = await authModule.InvokeAsync<string>("GetInputValue", "loginInputPassword");
         await authModule.InvokeVoidAsync("SignIn", email, password, GetReturnUrl());
     }
 

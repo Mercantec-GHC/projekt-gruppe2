@@ -57,6 +57,13 @@ namespace BlazorApp.Controllers
             return this.Ok();
         }
 
+        [HttpPost]
+        [Route("api/auth/register")]
+        public async Task<ActionResult> RegisterPost(User value)
+        {
+            return this.Ok();
+        }
+
         [HttpGet]
         [Route("/access-denied")]
         public async Task<ActionResult> AccessDenied()
