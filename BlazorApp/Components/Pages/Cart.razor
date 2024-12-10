@@ -1,11 +1,23 @@
 ﻿@page "/Cart"
-@attribute [Authorize]
-
-<h3>Cart</h3>
+@using BlazorApp.Models
+@* <h3>Cart</h3>
 <div>
 	<a class="row justify-content-center" href="Checkout">Checkout</a>
+</div> *@
+
+<div class="card shadow">
+	<h1 class="card-header">Cart</h1>
+	<div class="card-body">
+
+	</div>
 </div>
 
 @code {
+	private string tempCookie = "4,13,17";
+	private ModelList<Book> booksInCart = new ModelList<Book>();
 
+	protected override async Task OnInitializedAsync()
+	{
+		
+	}
 }
