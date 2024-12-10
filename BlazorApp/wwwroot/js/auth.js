@@ -24,7 +24,7 @@
             else if (xhr.status == 400) {
                 loginText.innerHTML = "Log in";
                 loginSpinner.classList.add("d-none");
-                showLoginFlash();
+                ShowLoginFlash();
             }
         }
     };
@@ -62,12 +62,41 @@ export function SignOut(redirect) {
     xhr.send();
 };
 
-export function getInputValue(id) {
+export function Register(email, firstName, lastName, redirect, password) {
+
+    let url = "/api/auth/register";
+    let xhr = new XMLHttpRequest();
+
+    // Initialization
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    // Catch response
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) // 4=DONE 
+        {
+            console.log("Call '" + url + "'. Status " + xhr.status);
+            if (redirect)
+                location.replace("/");
+        }
+    };
+
+    // Call API
+    xhr.send();
+}
+
+export function GetInputValue(id) {
     const input = document.getElementById(id)
     return input.value;
 };
 
-export function showLoginFlash() {
+export function ShowLoginFlash() {
     const loginFlashMessage = document.getElementById('loginFlashMessage')
+    loginFlashMessage.style.display = "block";
+};
+
+export function ShowRegisterFlash() {
+    const loginFlashMessage = document.getElementById('registerFlashMessage')
     loginFlashMessage.style.display = "block";
 };

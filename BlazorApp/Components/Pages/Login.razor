@@ -3,25 +3,24 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView>
+    <Authorized>
+        @{
+            NavigationManager.NavigateTo("/");
+        }
+    </Authorized>
     <NotAuthorized>
 
         <PageTitle>Login</PageTitle>
 
-        <h3>Login</h3>
-
-        <LoginComponent />
+        <div class="row justify-content-center">
+            <div class="col col-xl-6">
+                <LoginComponent UseCard=true />
+            </div>
+        </div>
 
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity.IsAuthenticated)
-        {
-            NavigationManager.NavigateTo("/");
-        }
-    }
+
 }
