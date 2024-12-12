@@ -75,3 +75,7 @@
     --bs-btn-disabled-border-color: #0242a2;
     --bs-btn-hover-bg: #0252ca;
 }
+
+.card {
+    background-color: var(--bs-card-cap-bg);
+}
