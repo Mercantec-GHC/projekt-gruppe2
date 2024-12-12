@@ -1,23 +1,93 @@
-﻿@page "/Cart"
+﻿@page "/cart"
 @using BlazorApp.Models
-@* <h3>Cart</h3>
-<div>
-	<a class="row justify-content-center" href="Checkout">Checkout</a>
-</div> *@
+@inject IJSRuntime JSRuntime
 
 <div class="card shadow">
 	<h1 class="card-header">Cart</h1>
 	<div class="card-body">
+		@foreach (var entry in booksInCart)
+		{
+			Book book = entry.Key;
+			int quantity = entry.Value;
 
+			<p>ID: @book.Id - @quantity</p>
+		}
 	</div>
+</div>
+<div>
+	@*Change name to be more fitting *@
+	<button class="btn btn-secondary" @onclick=CheckoutCookie>Checkout</button>
 </div>
 
 @code {
-	private string tempCookie = "4,13,17";
-	private ModelList<Book> booksInCart = new ModelList<Book>();
+	// "4:2,13:1"
+	//exampel of book 1:2, where 1 is id, 2 is amount and "," makes it ready for the next book
+	private const string CookieName = "cart";
+	private Dictionary<Book, int> booksInCart = new Dictionary<Book, int>();
 
-	protected override async Task OnInitializedAsync()
+	//cannot InvokeAsync without onAfterRender and onAfterRender askes the db 2 times for the same things
+	protected override async void OnAfterRender(bool firstRender)
 	{
-		
+		Console.WriteLine(firstRender);
+		if (firstRender)
+		{
+			try
+			{
+				//loads the cookie
+				var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+				string cookieValue = await cookieModule.InvokeAsync<string>("getCookie", CookieName);
+				Console.WriteLine(cookieValue);
+				// splits cookie into an array
+				string[] cartArray = cookieValue.Split(",");
+				// creates array thats the lengh of cartArray
+				(string key, object value)[] parameters = new (string key, object value)[cartArray.Length];
+
+				for (int i = 0; i < cartArray.Length; i++)
+				{
+					string[] cart = cartArray[i].Split(":");
+					Console.WriteLine(cartArray[i]);
+					Console.WriteLine(cart.GetType());
+					Console.WriteLine(cart[0]);
+					//Makes the array readebel by splitting the the id and quantity and urning it into an int
+					int booiID = int.Parse(cartArray[i].Split(":")[0]);
+					parameters[i] = ("id", booiID);
+				}
+
+				ModelList<Book> booksInCartTemp = await Book.QueryBy("OR", parameters);
+				foreach (Book book in booksInCartTemp)
+				{
+					for (int i = 0; i < cartArray.Length; i++)
+					{
+						Console.WriteLine(cartArray[i]);
+						int booiID = int.Parse(cartArray[i].Split(":")[0]);
+						int quantity = int.Parse(cartArray[i].Split(":")[1]);
+
+						if (book.Id == booiID)
+						{
+							booksInCart.Add(book, quantity);
+							break;
+						}
+					}
+				}
+				StateHasChanged();
+			}
+			catch
+			{
+				
+			}
+		}
+	}
+
+	//sets the cookie
+	private async Task CartCookie(string accepted)
+	{
+		var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+		await cookieModule.InvokeVoidAsync("setCookie", CookieName, accepted, 400);
+		StateHasChanged();
+	}
+
+	private async Task CheckoutCookie()
+	{
+		await CartCookie("4:2,13:1");
 	}
 }
