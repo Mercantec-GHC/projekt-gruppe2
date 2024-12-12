@@ -1,19 +1,15 @@
 ﻿@page "/login"
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
 
 <AuthorizeView>
-    <Authorized>
-        @{
-            NavigationManager.NavigateTo("/");
-        }
-    </Authorized>
     <NotAuthorized>
 
         <PageTitle>Login</PageTitle>
 
         <div class="row justify-content-center">
-            <div class="col col-xl-6">
+            <div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
                 <LoginComponent UseCard=true />
             </div>
         </div>
@@ -22,5 +18,11 @@
 </AuthorizeView>
 
 @code {
-
+    protected async override Task OnInitializedAsync()
+    {
+        if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 }

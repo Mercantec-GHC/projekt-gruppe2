@@ -1,0 +1,30 @@
+﻿@inject IWebHostEnvironment env
+@using System.Security.Claims;
+
+<AuthorizeView>
+    <Authorized>
+		<img id="@id" src="@GetUserAvatar(context.User)" height="@height" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+    </Authorized>
+</AuthorizeView>
+
+@code {
+	[Parameter]
+	public string id { get; set; }
+
+	[Parameter]
+	public string height { get; set; }
+
+	private string GetUserAvatar(ClaimsPrincipal user)
+	{
+		var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value;
+		var rootPath = Path.Combine(env.ContentRootPath, "files");
+		var filePath = $"avatars/{userId}.png";
+		var fullPath = Path.Combine(rootPath, filePath);
+
+		if (System.IO.File.Exists(fullPath))
+		{
+			return $"files/{filePath}";
+		}
+		else return "images/no_avatar.png";
+	}
+}

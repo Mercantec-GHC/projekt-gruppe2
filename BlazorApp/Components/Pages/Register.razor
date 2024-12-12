@@ -2,19 +2,15 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRunTime
+@inject IHttpContextAccessor HttpContextAccessor
 @using BlazorApp.Models
 
 <AuthorizeView>
-    <Authorized>
-        @{
-            NavigationManager.NavigateTo("/");
-        }
-    </Authorized>
     <NotAuthorized>
         <PageTitle>Register</PageTitle>
 
         <div class="row justify-content-center">
-            <div class="col col-xl-6">
+            <div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
                 <EditForm FormName="Register" Model="this" OnSubmit="HandleRegister" id="registerForm" Context="formContext">
                     <div class="card shadow">
                         <h1 class="card-header">Register</h1>
@@ -54,9 +50,9 @@
                         </div>
 
                         <div class="card-footer text-muted py-3">
-                            <button type="submit" class="btn btn-primary" style="width:120px;">
+                            <button type="submit" class="btn btn-primary" style="width:140px;">
                                 <span id="registerSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
-                                <span id="registerText" role="status">Register</span>
+                                <span id="registerText" role="status">Sign up</span>
                             </button>
                             <a class="btn btn-link d-inline-block" href="login">Login</a>
                         </div>
@@ -69,6 +65,14 @@
 </AuthorizeView>
 
 @code {
+    protected async override Task OnInitializedAsync()
+    {
+        if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
     private async void HandleRegister()
     {
         var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
@@ -78,13 +82,31 @@
         string username = await authModule.InvokeAsync<string>("GetInputValue", "registerInputUsername");
         string password = await authModule.InvokeAsync<string>("GetInputValue", "registerInputPassword");
 
-        Console.WriteLine("{0} - {1} - {2} - {3} - {4}", email, firstName, lastName, username, password);
+        await authModule.InvokeVoidAsync("Register", email, firstName, lastName, username, password);
 
-        ModelList<User> users = await User.QueryBy("OR", ("email", email), ("username", username));
-        Console.WriteLine(users.Any());
-        if (users.Any())
-        {
-            await authModule.InvokeVoidAsync("ShowRegisterFlash");
-        }
+        // Console.WriteLine("{0} - {1} - {2} - {3} - {4}", email, firstName, lastName, username, password);
+
+        // ModelList<User> users = await User.QueryBy("OR", ("email", email), ("username", username));
+        // Console.WriteLine(users.Any());
+        // if (users.Any())
+        // {
+        //     await authModule.InvokeVoidAsync("ShowRegisterFlash");
+        // }
+        // else
+        // {
+        //     User newUser = new User
+        //     {
+        //         Email = email,
+        //         FirstName = firstName,
+        //         LastName = lastName,
+        //         Username = username,
+        //         Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13),
+        //         Role = "user",
+        //         CreatedAt = DateTime.UtcNow
+        //     };
+        //     await newUser.Commit();
+
+        //     NavigationManager.NavigateTo("/login");
+        // }
     }
 }

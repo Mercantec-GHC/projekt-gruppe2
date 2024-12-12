@@ -1,0 +1,151 @@
+﻿@page "/account"
+@attribute [Authorize]
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRunTime
+@inject IHttpContextAccessor HttpContextAccessor
+
+@using BlazorApp.Components.Layout
+@using BlazorApp.Models;
+@using System.Security.Claims;
+
+<div class="row justify-content-center">
+    <div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
+        <div class="card shadow">
+            <h1 class="card-header">Account Information</h1>
+            <div class="card-body">
+                <!-- Avatar -->
+                <div class="row">
+                    <div class="col-sm-auto d-flex justify-content-center">
+                        <label class="btn rounded-circle m-0 p-0 avatar-edit">
+                            <Avatar id="profilePageAvatar" height="192" />
+                            <input type="file" class="d-none" id="input" name="image" accept="image/*">
+                        </label>
+                    </div>
+                    <div class="col align-self-center">
+                        <h3 class="fst-italic mt-3 mt-sm-0">Here you can change your user information.</h3>
+                        <p class="text-start fst-italic fw-bold d-none d-sm-block mb-0">To change your avatar, click the image to the left.</p>
+                        <p class="text-start fst-italic fw-bold d-block d-sm-none mb-1">To change your avatar, click the image above.</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="border m-0" />
+            <EditForm FormName="Account" Model="this" OnSubmit="UpdateUser">
+                <div class="card-body">
+                    <!-- User Information -->
+                    <h5 class="fw-bold mb-3">User Information:</h5>
+                    <div class="row row-cols-1 row-cols-sm-2 mb-3 g-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingFirstName" name="firstname" placeholder="First Name" value="@CurrentUser.FirstName">
+                                <label for="floatingEmail">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingLastName" name="lastname" placeholder="Last Name" value="@CurrentUser.LastName">
+                                <label for="floatingEmail">Last Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingEmail" name="email" placeholder="Email" value="@CurrentUser.Email">
+                        <label for="floatingEmail">Email Address</label>
+                    </div>
+                    <h5 class="fw-bold mb-3">Change Password:</h5>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword1" name="password1" placeholder="Password">
+                        <label for="floatingPassword1">Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword2" name="password2" placeholder="Password">
+                        <label for="floatingPassword2">Confirm Password</label>
+                    </div>
+                </div>
+                <div class="card-footer text-muted py-3">
+                    <div class="d-flex justify-content-center justify-content-sm-end">
+                        <button type="submit" id="saveButton" class="btn btn-secondary" disabled>Save Changes</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="avatarModal" tabindex="-1" aria-labelledby="avatarModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModal">Change Avatar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid d-flex justify-content-center">
+                    <div class="img-container" style="height: 256px; width: 256px;">
+                        <img id="image" src="" class="crop-image">
+                    </div>
+                </div>
+                <div class="container-fluid mt-3">
+                    <p class="text-start fw-bold mb-1">How to use:</p>
+                    <ul class="list-style">
+                        <li>Use the mouse wheel to zoom.</li>
+                        <li>Click and drag the image to move.</li>
+                        <li class="fst-italic fw-light">(Touch screen supported)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="avatarButton">Upload</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected User CurrentUser = new User();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var userId = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value;
+            ModelList<User> users = await User.QueryBy(("id", userId));
+            CurrentUser = users.FirstOrDefault();
+
+            await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/cropperjs/cropper.min.js");
+            var avatarModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/avatar.js");
+            await avatarModule.InvokeVoidAsync("Load", CurrentUser.Id);
+
+            var accountModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/account.js");
+            await accountModule.InvokeVoidAsync("Load", CurrentUser.FirstName, CurrentUser.LastName, CurrentUser.Email);
+
+            StateHasChanged();
+        }
+    }
+
+    private async void UpdateUser()
+    {
+        var accountModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/account.js");
+        await accountModule.InvokeVoidAsync("DisableSubmit");
+
+        var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+        string email = await authModule.InvokeAsync<string>("GetInputValue", "floatingEmail");
+        string firstName = await authModule.InvokeAsync<string>("GetInputValue", "floatingFirstName");
+        string lastName = await authModule.InvokeAsync<string>("GetInputValue", "floatingLastName");
+        string password1 = await authModule.InvokeAsync<string>("GetInputValue", "floatingPassword1");
+        string password2 = await authModule.InvokeAsync<string>("GetInputValue", "floatingPassword2");
+
+        if (password1.Length > 0 && password1 == password2)
+        {
+            CurrentUser.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password1, 13);
+        }
+        CurrentUser.Email = email;
+        CurrentUser.FirstName = firstName;
+        CurrentUser.LastName = lastName;
+        await CurrentUser.Commit();
+
+        NavigationManager.NavigateTo("/account", true);
+    }
+}
