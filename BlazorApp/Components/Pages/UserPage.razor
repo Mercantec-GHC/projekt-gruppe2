@@ -1,0 +1,37 @@
+﻿@page "/u/{Username}"
+@using BlazorApp.Models;
+
+@if (User == null)
+{
+	<ErrorPage Status="404" />
+}
+else if (User.Username != null)
+{
+	<div class="card shadow">
+		<h1 class="card-header">@User.FirstName @User.LastName</h1>
+		<div class="card-body">
+			@User.CreatedAt.ToShortDateString()
+		</div>
+		<h3 class="card-header border-top">Books for sale.</h3>
+		<div class="card-body">
+			<BookComponent books="Books"></BookComponent>
+		</div>
+		<div class="card-footer">
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public string Username { get; set; }
+
+	private User User = new User();
+	private ModelList<Book> Books = new ModelList<Book>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		ModelList<User> users = await User.QueryBy(("username", Username));
+		User = users.FirstOrDefault();
+		Books = await User.GetBooks();
+	}
+}

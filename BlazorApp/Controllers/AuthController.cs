@@ -6,17 +6,12 @@ using BlazorApp.Models;
 
 namespace BlazorApp.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private static readonly AuthenticationProperties COOKIE_EXPIRES = new AuthenticationProperties()
-        {
-            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30), //Testing needed!
-            //IsPersistent = true,
-        };
-
         [HttpPost]
-        [Route("api/auth/signin")]
+        [Route("signin")]
         public async Task<ActionResult> SignInPost(SigninData value)
         {
             ModelList<User> users = await BlazorApp.Models.User.QueryBy(("email", value.Email));
@@ -36,8 +31,13 @@ namespace BlazorApp.Controllers
 
                 var claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = COOKIE_EXPIRES;
-                authProperties.IsPersistent = true;
+                var authProperties = new AuthenticationProperties()
+                {
+                    //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60), //Testing needed!
+                    IsPersistent = value.Remember,
+                    //AllowRefresh = true,
+                };
+                //authProperties.IsPersistent = true;
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
@@ -50,15 +50,40 @@ namespace BlazorApp.Controllers
         }
 
         [HttpPost]
-        [Route("api/auth/signout")]
+        [Route("signout")]
         public async Task<ActionResult> SignOutPost()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return this.Ok();
         }
 
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult> RegisterPost(RegisterData value)
+        {
+            ModelList<User> users = await BlazorApp.Models.User.QueryBy("OR", ("email", value.Email), ("username", value.Username));
+            
+            if (!users.Any())
+            {
+                User newUser = new User
+                {
+                    Email = value.Email,
+                    FirstName = value.FirstName,
+                    LastName = value.LastName,
+                    Username = value.Username,
+                    Password = BCrypt.Net.BCrypt.EnhancedHashPassword(value.Password, 13),
+                    Role = "user",
+                    CreatedAt = DateTime.UtcNow
+                };
+                await newUser.Commit();
+                return this.Ok();
+            }
+
+            return this.BadRequest();
+        }
+
         [HttpGet]
-        [Route("/access-denied")]
+        [Route("access-denied")]
         public async Task<ActionResult> AccessDenied()
         {
             return this.Redirect("/");
@@ -68,6 +93,16 @@ namespace BlazorApp.Controllers
     public class SigninData
     {
         public string Email { get; set; }
+        public string Password { get; set; }
+        public bool Remember { get; set; }
+    }
+
+    public class RegisterData
+    {
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
     }
 }
