@@ -1,0 +1,49 @@
+﻿@using BlazorApp.Models
+@using BlazorApp.Service
+
+
+<div class="card shadow-sm">
+    <div class="card-header text-center">
+        Categories
+    </div>
+    <div class="card-body">
+        <div class="col gy-3">
+            @if (Categories != null && Categories.Any())
+            {
+                @foreach (Category category in Categories)
+                {
+                    string id = $"checkCategory{category.Id}";
+                    <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   value="@category.Id"
+                                   id="@id"
+                                   checked="@SelectedCategories.Contains(category.Id)"
+                                   @onclick="() => NotifyParent(category)">
+                            <label class="form-check-label"
+                                   for="@id"
+                                   aria-label="@category.Name">
+                                @category.Name
+                            </label>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public ModelList<Category> Categories { get; set; }
+    [Parameter] 
+    public HashSet<int> SelectedCategories { get; set; }
+    [Parameter] 
+    public EventCallback<Category> OnCategorySelected { get; set; }
+
+    private async Task NotifyParent(Category category)
+    {
+        await OnCategorySelected.InvokeAsync(category);
+    }
+}
