@@ -109,6 +109,11 @@ namespace BlazorApp.Models
 
         public static async Task<ModelList<T>> QueryBy(params (string Key, object Value)[] parameters)
         {
+            return await QueryBy("AND", parameters);
+        }
+
+        public static async Task<ModelList<T>> QueryBy(string paramAndOr, params (string Key, object Value)[] parameters)
+        {
             var results = new ModelList<T>();
 
             string tableName = GetTableName();
@@ -118,7 +123,7 @@ namespace BlazorApp.Models
             foreach (var param in parameters)
             {
                 if (paramCount == 0) queryParams += " WHERE";
-                else queryParams += " AND";
+                else queryParams += $" {paramAndOr}";
 
                 queryParams += $" {param.Key}={FormatSql(param.Value)}";
                 paramCount++;

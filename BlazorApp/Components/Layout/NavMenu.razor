@@ -4,7 +4,7 @@
 @inject IJSRuntime JSRunTime
 
 <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom shadow">
-    <div class="container-fluid container-xxl">
+    <div class="container">
         <a class="navbar-brand" href="">
             <i class="bi bi-book"></i>
         </a>
@@ -54,15 +54,17 @@
 
                 <ThemeMenu />
 
-                @if (!IsLoginPage())
-                {
-                    <NavbarLine />
-                }
+                <NavbarLine />
+
                 <AuthorizeView>
                     <Authorized>
                         <div class="nav-item dropdown">
                             <button class="nav-link navbar-img" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img id="userAvatar" src="images/no_avatar.png" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
+                                @* @{
+                                    string avatar = $"images/avatars/{GetUserId(context.User)}.png";
+                                    <img id="userAvatar" src="@avatar" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
+                                } *@
+                                <Avatar id="userAvatar" height="40" />
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">Account</NavLink></li>
@@ -83,13 +85,17 @@
                         @if (!IsLoginPage())
                         {
                             <div class="nav-item">
-                                <button type="button" class="nav-link fw-bold d-inline-block pe-0" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <button type="button" class="nav-link fw-bold d-inline-block" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     Login
                                 </button>
+                            </div>
+                            <div class="nav-item">
                                 <span class="navbar-text fw-bold d-none d-sm-inline-block">/</span>
-                                <NavLink class="nav-link fw-bold d-block d-sm-inline-block ps-0" href="register" Match="NavLinkMatch.All">Register</NavLink>
                             </div>
                         }
+                        <div class="nav-item">
+                            <NavLink class="nav-link fw-bold d-block d-sm-inline-block" href="register" Match="NavLinkMatch.All">Register</NavLink>
+                        </div>
                     </NotAuthorized>
                 </AuthorizeView>
             </div>
@@ -109,9 +115,7 @@
                             <h1 class="modal-title fs-5" id="loginModalLabel">Login</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <LoginComponent />
-                        </div>
+                        <LoginComponent />
                     </div>
                 </div>
             </div>
@@ -122,8 +126,15 @@
 @code {
     protected override async void OnAfterRender(bool firstRender)
     {
-        var navModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/navmenu.js");
-        await navModule.InvokeVoidAsync("attachHandlers");
+        try
+        {
+            var navModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/navmenu.js");
+            await navModule.InvokeVoidAsync("attachHandlers");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error attaching JS libraries: {ex.Message}");
+        }
     }
 
     private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
@@ -153,13 +164,20 @@
 
     private bool IsLoginPage()
     {
-        return GetCurrentUrl() == "/login";
+        string url = GetCurrentUrl();
+        return url == "/login" || url == "/register";
     }
 
     private async void handleLogout()
     {
         var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
         await authModule.InvokeVoidAsync("SignOut", "/");
+    }
+
+    private string GetUserId(ClaimsPrincipal user)
+    {
+        var id = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value;
+        return $"{id}";
     }
 
     private string GetUserPage(ClaimsPrincipal user)
