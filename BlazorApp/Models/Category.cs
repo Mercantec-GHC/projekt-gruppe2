@@ -3,7 +3,7 @@
 namespace BlazorApp.Models
 {
     [Table("categories")]
-    public class Categories : DatabaseModel<Categories>
+    public class Category : DatabaseModel<Category>
     {
         [SqlItem("id", "SERIAL PRIMARY KEY")]
         public int Id { get; set; }

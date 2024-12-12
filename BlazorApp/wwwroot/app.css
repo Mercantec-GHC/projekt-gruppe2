@@ -3,12 +3,7 @@ html, body {
 }
 
 body {
-    margin-top: 56px !important;
-}
-footer {
-    margin-top: 10%; 
-    text-align: center;
-    padding: 10px;
+    padding-top: 56px !important;
 }
 
 a, .btn-link {
@@ -53,16 +48,6 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
-}
-
-.cookie-box{
-    position: fixed;
-    width: 100%;
-    height: 100px;
-    bottom: 0;
-    left: 0;
-    background-color: aqua;
-    display: none;
 }
 
 .navbar-img {
@@ -137,4 +122,29 @@ h1:focus {
     padding: 3px;
     z-index: 100;
     right: 0;
+}
+
+.card-filter {
+    border-radius: 0;
+    border: 0;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
+}
+
+.d-filter {
+    display: none;
+}
+
+@media only screen and (min-width : 1730px) {
+    .card-filter {
+        position: fixed;
+        width: 192px;
+        transform: translate(-206px, 0px);
+        border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+        border-radius: var(--bs-card-border-radius);
+        box-shadow: var(--bs-box-shadow) !important;
+    }
+
+    .d-filter {
+        display: block;
+    }
 }

@@ -1,35 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
-<NavMenu />
-<div class="page">
-    <main>
+<header>
+    <NavMenu />
+</header>
 
-        @* <div class="container content px-4">
-            <div class="row justify-content-center g-3">
-                <div class="col-xl-10">
-                    @Body
-                </div>
-            </div>
-        </div> *@
+<main class="flex-shrink-0 py-3">
 
-        <article class="content px-4">
-            @Body
-        </article>
-       
+    <article class="container-md px-sm-4 px-md-5">
+        @Body
+    </article>
 
-    </main>
-   
-    
-</div>
-<footer>
-    <p>© 2024 BookVerse. All Rights Reserved.</p>
+    <CookieComponent />
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-dark border-top">
+    <Footer />
 </footer>
-
-
-<CookieComponent />
-
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>

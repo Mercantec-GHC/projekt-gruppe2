@@ -14,7 +14,7 @@ namespace BlazorApp.Service
 			Instance = this;
 
             User.BuildTable();
-            Categories.BuildTable();
+            Category.BuildTable();
 			Book.BuildTable();
         }
 
