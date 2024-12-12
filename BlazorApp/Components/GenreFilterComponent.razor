@@ -1,0 +1,48 @@
+﻿@using BlazorApp.Models
+@using BlazorApp.Service
+
+<div class="card shadow-sm" style="margin-top: 20px">
+    <div class="card-header text-center">
+        Genres
+    </div>
+    <div class="card-body">
+        <div class="col gy-3">
+            @if (Genres != null && Genres.Any())
+            {
+                @foreach (Genre genre in Genres)
+                {
+                    string id = $"checkGenre{genre.Id}";
+                    <div class="col-12 col-sm-6">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   value="@genre.Id"
+                                   id="@id"
+                                   checked="@SelectedGenres.Contains(genre.Id)"
+                                   @onclick="() => NotifyParent(genre)">
+                            <label class="form-check-label"
+                                   for="@id"
+                                   aria-label="@genre.Name">
+                                @genre.Name
+                            </label>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public ModelList<Genre> Genres { get; set; }
+    [Parameter] 
+    public HashSet<int> SelectedGenres { get; set; }
+    [Parameter] 
+    public EventCallback<Genre> OnGenreSelected { get; set; }
+
+    private async Task NotifyParent(Genre genre)
+    {
+        await OnGenreSelected.InvokeAsync(genre);
+    }
+}

@@ -15,11 +15,8 @@ namespace BlazorApp
                 .AddInteractiveServerComponents();
 
             // Initializing the DBService.
-            builder.Services.AddSingleton(sp =>
-            {
-                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                return new DBService(connectionString);
-            });
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddSingleton(new DBService(connectionString));
 
             // Create authentication.
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -29,11 +26,14 @@ namespace BlazorApp
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
                 options.LoginPath = "/login";
                 options.AccessDeniedPath = "/access-denied";
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = true;
             });
 
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddHttpContextAccessor();
+            //builder.Services.AddScoped<UserService>();
             builder.Services.AddControllers();
 
             var app = builder.Build();

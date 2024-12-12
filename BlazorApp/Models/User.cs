@@ -28,5 +28,10 @@ namespace BlazorApp.Models
 
         [SqlItem("created_at", "DATE NOT NULL")]
         public DateTime CreatedAt { get; set; }
+
+        public async Task<ModelList<Book>> GetBooks()
+        {
+            return await Book.QueryBy(("seller_id", Id));
+        }
     }
 }
