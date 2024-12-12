@@ -4,20 +4,21 @@
 @using BlazorApp.Service
 
 <PageTitle>Home</PageTitle>
-<div class="content">
+<div class="content text-center px-3">
 
-	<div class="banner">
-		<div class="hero-text">Book</div>
-		<div class="hero-text">Verse</div>
-	</div>
+    <div class="banner d-flex justify-content-center align-items-center">
+        <div class="hero-text">Book</div>
+        <div class="hero-text">Verse</div>
+    </div>
 
-	<div style="margin-top: 50px">
-		<h1>Uncover Worlds. Discover Deals.</h1>
-		<div style="margin-top: 50px">
-			<button @onclick="NavigateToUrl" type="button" class="btn btn-primary me-3">I want to buy</button>
-			<button type="button" class="btn btn-primary">I want to sell</button>
-		</div>
-	</div>
+    <div class="mt-5">
+        <h1>Uncover Worlds. Discover Deals.</h1>
+       
+        <div class="mt-4">
+            <button @onclick="NavigateToUrl" type="button" class="btn btn-primary me-3">I want to buy</button>
+            <button type="button" class="btn btn-primary">I want to sell</button>
+        </div>
+    </div>
 </div>
 @code {
 	[Inject]
@@ -25,6 +26,6 @@
 
 	private void NavigateToUrl()
 	{
-		Navigation.NavigateTo("https://localhost:7130/books");
+		Navigation.NavigateTo("https://localhost:7130/books", true);
 	}
 }

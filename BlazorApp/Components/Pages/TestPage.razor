@@ -73,10 +73,11 @@
 @code {
 	private ModelList<Category> categories = new ModelList<Category>();
 	private ModelList<Genre> genres = new ModelList<Genre>();
+	private ModelList<Book> books = new ModelList<Book>();
 
 	protected override async Task OnInitializedAsync()
 	{
-		// books = await Book.QueryAll();
+		//_books = await Book.QueryAll();
 		categories = await Category.QueryAll();
 		genres = await Genre.QueryAll();
 	}
