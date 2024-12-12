@@ -1,0 +1,26 @@
+﻿@page "/books/{Id:int}"
+@using BlazorApp.Models
+@inject NavigationManager Navigation
+
+@if(Book != null)
+{
+    <h1>Book: @Book.Title</h1>
+    <h1>by @Book.Author</h1>
+    
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public Book? Book { get; set; }
+    private ModelList<Book> _books = new ModelList<Book>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _books = await Book.QueryAll();
+        Book = _books.FirstOrDefault(b => b.Id == Id);
+    }
+}
+

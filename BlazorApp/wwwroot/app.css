@@ -79,42 +79,66 @@ h1:focus {
 .content {
     display: flex;
     flex-direction: column;
-    text-align: center;
-    align-items: center; /* Ensure content is centered horizontally */
-    padding: 0 20px; /* Add horizontal padding for better spacing on small screens */
+    flex-wrap: nowrap;
+    align-items: stretch;
 }
 
 .banner {
+    display: flex;
+    flex-direction: row;
     border: 20px solid transparent;
     border-image-source: url('/images/hero_image.png');
-    background-color: transparent;
     border-image-slice: 30;
     padding: 10px;
     width: 100%;
     max-width: 1600px;
     height: 500px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    background-color: transparent;
 }
 
 .hero-text {
-    font-size: 18vw;
+    
+    width: 750px;
     font-weight: bold;
     background-image: url('/images/hero_image.png');
     background-size: contain;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-align: center;
     margin: 0;
+    text-align: center;
+    max-width: 800px;
 }
 
+/* Responsive adjustments */
 @media (max-width: 1200px) {
     .banner {
         height: 400px;
     }
-    /*Home Page End*/
 }
+
+@media (max-width: 768px) {
+    .banner {
+        height: 300px;
+    }
+
+    .hero-text {
+        font-size: clamp(2rem, 14vw, 8rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .banner {
+        height: 200px;
+    }
+
+    .hero-text {
+        font-size: clamp(1rem, 9vw, 4rem);
+    }
+}
+/*Home Page End*/
+
 
 .notification-counter {
     position: absolute;

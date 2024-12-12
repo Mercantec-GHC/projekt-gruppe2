@@ -146,8 +146,8 @@ namespace BlazorApp.Models
                             {
                                 var value = reader[sqlItem.Name];
                                 if (value != DBNull.Value)
-                                {
-                                    property.SetValue(item, value);
+								{
+									property.SetValue(item, value);
                                 }
                             }
                         }

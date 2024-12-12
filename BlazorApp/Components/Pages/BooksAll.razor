@@ -5,141 +5,155 @@
 
 <PageTitle>All Books</PageTitle>
 
-<h3>All Books</h3>
-@*<p>@connectionStatus</p> *@
-
-<div class="search-bar">
-	<SearchComponent SearchFilter="@searchFilter" SearchBookCallback="HandleSearch"></SearchComponent>
-</div>
-<div class="main-container">
-
-	<div class="categories">
-		<h3>Categories</h3>
-
-		<div class="category-table-container">
-			<table class="table">
-				<tbody>
-					@foreach (var category in categories)
-					{
-						<tr @onclick="() => OnCategoryClick(category)" class="@(selectedCategory == category ? "selected-category" : "")">
-							<td>@category.Name</td>
-						</tr>
-					}
-				</tbody>
-			</table>
+<div class="container">
+	<div class="flex flex-nowrap">
+		<div class="position-sticky position-fixed ">
+			<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
 		</div>
-
 	</div>
+	
+	<div class="row">
+		<div class="col-12 col-md-2 p-3">
+			<div class=" ">
+			<CategoryFilterComponent Categories="_categories"
+									 SelectedCategories="_selectedCategories"
+									 OnCategorySelected="OnCategoryClick" />
 
-	<div class="mt-auto">
-		@if (selectedCategory == null)
-		{
-			<BookComponent books="books"></BookComponent>
-		}
-		else
-		{
-			<div>
-
-
-				<h2>All books in category @selectedCategory.Name</h2>
-
-				@if (filteredBooks != null && filteredBooks.Any())
+			<GenreFilterComponent Genres="_genres"
+								  SelectedGenres="_selectedGenres"
+								  OnGenreSelected="OnGenreClick" />
+		</div>
+		</div>
+		
+		<main class="col-12 col-md-9" style="margin-top: 15px">
+			
+			<div class="py-3 bg-body-tertiary">
+				@if (isLoading)
 				{
-					@foreach (var book in filteredBooks)
-					{
-						<BookComponent books="filteredBooks"></BookComponent>
-					}
+					<div class="text-center">
+						<p>Loading books...</p>
+					</div>
 				}
 				else
 				{
-					<p>No books in this category</p>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+						@if (_filteredBooks != null && _filteredBooks.Any())
+						{
+							@foreach (Book book in _filteredBooks)
+							{
+								<BookComponent book="book"></BookComponent>
+							}
+						}
+						else
+						{
+							<p style="margin-left: 20px;">No books found based on your filters...</p>
+						}
+					</div>
 				}
-
 			</div>
-		}
-
-
+		</main>
+		@* to be implemented! *@
+		<div class="container">
+			<p class="float-end mb-1">
+				<a href="#">Back to top</a>
+			</p>
+		</div>
 	</div>
 </div>
 
-
 @code {
-	private ModelList<Category> categories = new ModelList<Category>();
-	private ModelList<Book> books = new ModelList<Book>();
-	private ModelList<Book> filteredBooks = new ModelList<Book>();
-	private string connectionStatus;
-	private string searchFilter = "";
 
-	private void HandleSearch(string searchFilter)
-	{
-		this.searchFilter = searchFilter;
-	}
+	private ModelList<Category> _categories = new ModelList<Category>();
+	private ModelList<Book> _books = new ModelList<Book>();
+	private ModelList<Genre> _genres = new ModelList<Genre>();
+
+	private ModelList<Book> _filteredBooks = new ModelList<Book>();
+	private HashSet<int> _selectedCategories = new HashSet<int>();
+	private HashSet<int> _selectedGenres = new HashSet<int>();
+	private bool isLoading = false;
+	// 
+	// [Inject]
+	// private NavigationManager Navigation { get; set; }
+
+	// private void NavigateToUrl()
+	// {
+	// 	Navigation.NavigateTo("https://localhost:7130/books", true);
+	// }
 
 	protected override async Task OnInitializedAsync()
 	{
-		books = await Book.QueryAll();
-		categories = await Category.QueryAll();
+		isLoading = true;
+		_books = await Book.QueryAll();
+		_categories = await Category.QueryAll();
+		_genres = await Genre.QueryAll();
+		isLoading = false;
+		await ApplyFilters();
 	}
-	private Category selectedCategory;
 
 	private async Task OnCategoryClick(Category category)
 	{
-		selectedCategory = category;
-		try
+		if (_selectedCategories.Contains(category.Id))
 		{
-			if (selectedCategory != null)
-			{
-				var booksForCategory = await selectedCategory.GetBooksAsync();
-				filteredBooks = booksForCategory;
-			}
-			else
-			{
-				filteredBooks = new ModelList<Book>();
-			}
+			_selectedCategories.Remove(category.Id);
 		}
-		catch (Exception ex)
+		else
 		{
-			Console.WriteLine($"Error fetching books: {ex.Message}");
-			filteredBooks = new ModelList<Book>();
+			_selectedCategories.Add(category.Id);
 		}
+		await ApplyFilters();
 	}
 
+	private async Task OnGenreClick(Genre genre)
+	{
+		if (_selectedGenres.Contains(genre.Id))
+		{
+			_selectedGenres.Remove(genre.Id);
+		}
+		else
+		{
+			_selectedGenres.Add(genre.Id);
+		}
+		await ApplyFilters();
+	}
+
+	private async Task OnSearch(string searchInput)
+	{
+		var searchResults = _books.AsQueryable();
+
+		if (!string.IsNullOrWhiteSpace(searchInput))
+		{
+			searchResults = searchResults
+				.Where(book => book.Title.Contains(searchInput, StringComparison.OrdinalIgnoreCase)
+							|| book.Author.Contains(searchInput, StringComparison.OrdinalIgnoreCase));
+		}
+		_filteredBooks.Clear();
+		_filteredBooks.AddRange(searchResults.ToList());
+
+		StateHasChanged();
+	}
+
+	private async Task ApplyFilters()
+	{
+		isLoading = true;
+
+		var filteredBooksList = _books.AsQueryable();
+
+		if (_selectedCategories.Any())
+		{
+			filteredBooksList = filteredBooksList
+				.Where(book => book.CategoryId != null && _selectedCategories.Contains(book.CategoryId));
+		}
+
+		if (_selectedGenres.Any())
+		{
+			filteredBooksList = filteredBooksList
+				.Where(book => book.GenreId != null && _selectedGenres.Contains(int.Parse(book.GenreId)));
+		}
+
+		_filteredBooks.Clear();
+		_filteredBooks.AddRange(filteredBooksList.ToList());
+
+		isLoading = false;
+		StateHasChanged();
+	}
 }
-<style>
-	.main-container {
-		display: flex;
-		flex-direction: row;
-		gap: 20px;
-	}
-
-	.search-bar {
-		display: flex;
-		justify-content: center;
-		margin-bottom: 20px;
-	}
-
-	.categories {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.category-table-container {
-		overflow-x: auto;
-	}
-
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-
-	th, td {
-		padding: 8px;
-		text-align: left;
-		border: 1px solid #ddd;
-	}
-
-	th {
-		background-color: #f4f4f4;
-	}
-</style>

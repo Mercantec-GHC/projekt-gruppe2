@@ -1,36 +1,39 @@
 ﻿@using BlazorApp.Models
 
 <div class="input-group mb-3">
-	<input type="text" class="form-control" placeholder="Search ..."
-		   @bind-value="bookFilter"
-		   @bind-value:event="oninput" />
-	 <button class="btn btn-primary" type="button" id="button-search" @onclick="HandleSearch">Search</button> 
+	<input type="text"
+		   class="form-control"
+		   @bind="SearchInput"
+		   placeholder="Search by title or author" 
+		   />
+	<button class="btn btn-secondary"
+			type="button"
+			id="button-search"
+			@onclick="HandleSearch">
+		Search
+	</button>
+	<button class="btn btn-outline-secondary"
+			type="button"
+			id="button-clear"
+			@onclick="HandleClear">
+		Clear
+	</button>
 </div>
+
 
 @code {
 	[Parameter]
 	public EventCallback<string> SearchBookCallback { get; set; }
 	[Parameter]
-	public string SearchFilter { get; set; } = "";
-
-	private List<Book>? books;
-
-	private string bookFilter = " ";
-
-	protected override void OnParametersSet()
-	{
-		// if (string.IsNullOrWhiteSpace(this.SearchFilter))
-		// {
-		// 	books = BooksRepository.GetBooks();
-		// }
-		// else
-		// {
-		// 	books = BooksRepository.SearchBooks(this.SearchFilter);
-		}
-	
+	public string SearchInput { get; set; } = string.Empty;
 
 	private void HandleSearch()
 	{
-		SearchBookCallback.InvokeAsync();
+		SearchBookCallback.InvokeAsync(SearchInput);
+	}
+	private void HandleClear()
+	{
+		SearchInput = string.Empty;
+		SearchBookCallback.InvokeAsync(SearchInput);
 	}
 }
