@@ -6,15 +6,12 @@
 <PageTitle>All Books</PageTitle>
 
 <div class="container">
-	<div class="flex flex-nowrap">
-		<div class="position-sticky position-fixed ">
-			<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
-		</div>
+	<div class="col-10">
+		<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-12 col-md-2 p-3">
-			<div class=" ">
 			<CategoryFilterComponent Categories="_categories"
 									 SelectedCategories="_selectedCategories"
 									 OnCategorySelected="OnCategoryClick" />
@@ -23,11 +20,10 @@
 								  SelectedGenres="_selectedGenres"
 								  OnGenreSelected="OnGenreClick" />
 		</div>
-		</div>
-		
-		<main class="col-12 col-md-9" style="margin-top: 15px">
-			
-			<div class="py-3 bg-body-tertiary">
+
+		<main class="col-12 col-md-8">
+
+			<div class="py-3 ">
 				@if (isLoading)
 				{
 					<div class="text-center">
@@ -71,14 +67,7 @@
 	private HashSet<int> _selectedCategories = new HashSet<int>();
 	private HashSet<int> _selectedGenres = new HashSet<int>();
 	private bool isLoading = false;
-	// 
-	// [Inject]
-	// private NavigationManager Navigation { get; set; }
-
-	// private void NavigateToUrl()
-	// {
-	// 	Navigation.NavigateTo("https://localhost:7130/books", true);
-	// }
+	
 
 	protected override async Task OnInitializedAsync()
 	{

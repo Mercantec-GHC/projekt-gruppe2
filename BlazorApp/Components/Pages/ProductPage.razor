@@ -2,25 +2,133 @@
 @using BlazorApp.Models
 @inject NavigationManager Navigation
 
-@if(Book != null)
+
+
+@if (Book != null)
 {
-    <h1>Book: @Book.Title</h1>
-    <h1>by @Book.Author</h1>
-    
+	<div class="row">
+		<div class="col-md-3">
+			<div class="sticky-top">
+				<span class="badge text-bg-info position-absolute top-0 start-10 translate-middle-x badge rounded-tab">
+					@if (_categoryLookup.ContainsKey(Book.CategoryId))
+					{
+						@(_categoryLookup[Book.CategoryId])
+					}
+				</span>
+				<img src="@($"/images/3.jpg")"
+					 class="img-fluid rounded shadow"
+					 role="img"
+					 alt="@Book.Title">
+			</div>
+
+			<div class="list-group mt-3 ">
+				<span class="active text-alert fw-semibold text-center">
+					<h3 style="font-family: 'Book Antiqua' ">
+						@Book.Price.ToString("#,###.00") dkk
+					</h3>
+				</span>
+				<a href="#" class="btn btn-success">Add to cart</a>
+			</div>
+		</div>
+
+		<div class="col-md-8">
+			<div class="card mb-3 shadow">
+				<div class="card-header bg-light-subtle">
+					<h1 class="fw-bold mb-0"> @Book.Title</h1>
+					<h3 class="text-secondary-emphasis">by @Book.Author</h3>
+				</div>
+				<div class="card-body">
+
+					<p class="card-text">
+						<h5>Genre:</h5>
+						@if (_genres != null && _genres.Any() && !string.IsNullOrEmpty(Book.GenreId))
+						{
+							var genreIds = Book.GenreId.Split(',');
+
+							@foreach (var genreId in genreIds)
+							{
+								var genreIdInt = int.Parse(genreId);
+								var genre = _genres.FirstOrDefault(g => g.Id == genreIdInt);
+								if (genre != null)
+								{
+									@genre.Name
+								}
+							}
+						}
+					</p>
+					@if (Book.CategoryId == 1)
+					{
+						<p class="card-text">
+							<h5>Condition:</h5>  @(Book.IsNewCondition ? "New" : "Used")
+						</p>
+					}
+					else
+					{
+
+					}
+					<p class="card-text"> <h5>Year:</h5>  @Book.YearOfPrint</p>
+
+					@if (Book.CategoryId == 1)
+					{
+						<p class="card-text">
+							<h5>In stock: </h5>  @Book.Stock pcs.
+						</p>
+					}
+					else
+					{
+
+					}
+					<p class="card-text">
+						<small class="text-body-secondary">
+							@if (Book.CategoryId == 3)
+							{
+								<span>Audio length: @Book.Length.ToString() mins.</span>
+							}
+							else
+							{
+								<span>Pages: @Book.Length.ToString() </span>
+							}
+
+						</small>
+					</p>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="card mb-3 ">
+					<div class="card-body">
+						<p class="card-text"> <h5>Description:</h5>  @Book.Description</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 
-@code {
-    [Parameter]
-    public int Id { get; set; }
-    [Parameter]
-    public Book? Book { get; set; }
-    private ModelList<Book> _books = new ModelList<Book>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        _books = await Book.QueryAll();
-        Book = _books.FirstOrDefault(b => b.Id == Id);
-    }
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	[Parameter]
+	public Book? Book { get; set; }
+	[Parameter]
+	public HashSet<int> Genres { get; set; }
+
+	private HashSet<int> _selectedGenres = new HashSet<int>();
+	private Dictionary<int, string> _categoryLookup = new Dictionary<int, string>();
+
+	private ModelList<Book> _books = new ModelList<Book>();
+	private ModelList<Genre> _genres = new ModelList<Genre>();
+	private ModelList<Category> _categories = new ModelList<Category>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		_books = await Book.QueryAll();
+		_genres = await Genre.QueryAll();
+		_categories = await Category.QueryAll();
+		_categoryLookup = _categories.ToDictionary(c => c.Id, c => c.Name);
+		Book = _books.FirstOrDefault(b => b.Id == Id);
+	}
 }
 
