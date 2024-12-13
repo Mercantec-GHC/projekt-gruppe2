@@ -10,16 +10,6 @@ a, .btn-link {
     color: #006bb7;
 }
 
-/*.btn-primary {
-    color: #fff;
-    background-color: #696969;
-    border-color: #696969;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}*/
-
 h1:focus {
     outline: none;
 }
@@ -80,71 +70,6 @@ h1:focus {
 .navbar .avatar-img:hover {
     box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
 }
-
-/*Home Page*/
-.content {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: stretch;
-}
-
-.banner {
-    display: flex;
-    flex-direction: row;
-    border: 20px solid transparent;
-    border-image-source: url('/images/hero_image.png');
-    border-image-slice: 30;
-    padding: 10px;
-    width: 100%;
-    max-width: 1600px;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-}
-
-.hero-text {
-    
-    width: 750px;
-    font-weight: bold;
-    background-image: url('/images/hero_image.png');
-    background-size: contain;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
-    text-align: center;
-    max-width: 800px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .banner {
-        height: 400px;
-    }
-}
-
-@media (max-width: 768px) {
-    .banner {
-        height: 300px;
-    }
-
-    .hero-text {
-        font-size: clamp(2rem, 14vw, 8rem);
-    }
-}
-
-@media (max-width: 480px) {
-    .banner {
-        height: 200px;
-    }
-
-    .hero-text {
-        font-size: clamp(1rem, 9vw, 4rem);
-    }
-}
-/*Home Page End*/
-
 
 .notification-counter {
     position: absolute;

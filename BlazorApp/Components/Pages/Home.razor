@@ -6,26 +6,37 @@
 <PageTitle>Home</PageTitle>
 <div class="content text-center px-3">
 
-    <div class="banner d-flex justify-content-center align-items-center">
-        <div class="hero-text">Book</div>
-        <div class="hero-text">Verse</div>
-    </div>
+	<div class="card text-center h-100 border-0">
+		<img class="card-img w-100 vh-70" src="@($"/images/2.png")" alt="Hero Image" style="object-fit: cover;" />
+		<div class="card-img-overlay d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50">
+			<div class="mb-4">
+				<span class="card-title fw-bold" style="font-size: 10rem;">Book</span>
+				<span class="card-title fw-bold" style="font-size: 10rem;">Verse</span>
+			</div>
+			<p class="card-text mb-4"><small> Welcome to the book marketplace. </small></p>
 
-    <div class="mt-5">
-        <h1>Uncover Worlds. Discover Deals.</h1>
-       
-        <div class="mt-4">
-            <button @onclick="NavigateToUrl" type="button" class="btn btn-primary me-3">I want to buy</button>
-            <button type="button" class="btn btn-primary">I want to sell</button>
-        </div>
-    </div>
+			<hr class="w-50 my-5 border-2 border-white">
+
+			<h1 class="mb-4">Uncover Worlds. Discover Deals.</h1>
+
+				<div>
+				<button @onclick="NavigateToBooks" type="button" class="btn btn-light me-4">I want to buy</button>
+				<button @onclick="NavigateToNewBook" type="button" class="btn btn-light">I want to sell</button>
+				</div>
+		</div>
+	</div>
 </div>
+
 @code {
 	[Inject]
 	private NavigationManager Navigation { get; set; }
 
-	private void NavigateToUrl()
+	private void NavigateToBooks()
 	{
 		Navigation.NavigateTo("https://localhost:7130/books", true);
+	}
+	private void NavigateToNewBook()
+	{
+		Navigation.NavigateTo("https://localhost:7130/books/create-book", true);
 	}
 }
