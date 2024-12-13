@@ -38,7 +38,7 @@
 
                                 <div class="mb-3">
                                     <label for="registerInputUsername" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="registerInputUsername" required />
+                                <input type="text" class="form-control" id="registerInputUsername" required style="text-transform:lowercase;" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="registerInputPassword" class="form-label">Password</label>
@@ -83,30 +83,5 @@
         string password = await authModule.InvokeAsync<string>("GetInputValue", "registerInputPassword");
 
         await authModule.InvokeVoidAsync("Register", email, firstName, lastName, username, password);
-
-        // Console.WriteLine("{0} - {1} - {2} - {3} - {4}", email, firstName, lastName, username, password);
-
-        // ModelList<User> users = await User.QueryBy("OR", ("email", email), ("username", username));
-        // Console.WriteLine(users.Any());
-        // if (users.Any())
-        // {
-        //     await authModule.InvokeVoidAsync("ShowRegisterFlash");
-        // }
-        // else
-        // {
-        //     User newUser = new User
-        //     {
-        //         Email = email,
-        //         FirstName = firstName,
-        //         LastName = lastName,
-        //         Username = username,
-        //         Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13),
-        //         Role = "user",
-        //         CreatedAt = DateTime.UtcNow
-        //     };
-        //     await newUser.Commit();
-
-        //     NavigationManager.NavigateTo("/login");
-        // }
     }
 }

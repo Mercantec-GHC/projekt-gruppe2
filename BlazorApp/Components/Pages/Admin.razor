@@ -2,34 +2,48 @@
 @using BlazorApp.Models;
 @attribute [Authorize(Roles = "admin")]
 
-@* <button type="button" class="btn btn-primary" @onclick=TestButton>
-    Test Button!
-</button> *@
+<div class="card shadow">
+    <h1 class="card-header">Administrator Panel</h1>
 
-@foreach(User user in users)
-{
-    <h1>@user.Id: @user.Username - @user.CreatedAt.ToShortDateString()</h1>
-}
+    @* <div class="card-body">
+        <h3 class="m-0">User management.</h3>
+    </div>
+    <hr class="border m-0" /> *@
+
+    <div class="card-body">
+        <h4 class="fw-bold mb-3">User management:</h4>
+
+        <div class="card overflow-hidden">
+            <table class="table table-bordered-inner m-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (User user in users)
+                    {
+                        <tr>
+                            <th scope="row">@user.Id</th>
+                            <td>@user.Username</td>
+                            <td class="w-100">@user.FirstName @user.LastName</td>
+                            <td class="d-flex justify-content-end"><i class="bi bi-pencil-fill"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    @* <div class="card-footer text-muted">
+    </div> *@
+</div>
 
 @code {
     private ModelList<User> users = new ModelList<User>();
-
-    private async Task TestButton()
-    {
-        // User user = new User()
-        // {
-        //     Id = 33,
-        //     FirstName = "Nikolaj",
-        //     LastName = "Have",
-        //     Email = "nhave06@gmail.com",
-        //     Username = "nhave",
-        //     Password = BCrypt.Net.BCrypt.EnhancedHashPassword("Qwerty123", 13),
-        //     Role = "admin",
-        //     CreatedAt = DateTime.UtcNow
-        // };
-        // await user.Commit();
-        // users = await User.QueryAll();
-    }
 
     protected override async Task OnInitializedAsync()
     {
