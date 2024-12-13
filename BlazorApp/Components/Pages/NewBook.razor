@@ -1,0 +1,150 @@
+﻿@page "/books/create-book"
+@using BlazorApp.Components.Layout
+@using BlazorApp.Models
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRunTime
+
+<div class="row justify-content-center">
+	<div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
+		<div class="card shadow">
+			<h1 class="card-header">Add a new book for sale</h1>
+			<div class="card-body">
+				<!-- Picture -->
+				<div class="row">
+					<div class="col-sm-auto d-flex justify-content-center">
+						<label class="btn m-0 p-0 avatar-edit">
+							<Avatar id="profilePageAvatar" height="192" />
+							<input type="file" class="d-none" id="input" name="image" accept="image/*">
+						</label>
+					</div>
+					<div class="col align-self-center">
+						<h3 class="fst-italic mt-3 mt-sm-0">Please fill in all the fields.</h3>
+					</div>
+				</div>
+			</div>
+			<hr class="border m-0" />
+			<EditForm FormName="New book" Model="this" OnSubmit="AddBook">
+				<div class="card-body">
+					<div class="row row-cols-1 row-cols-sm-2 mb-3 g-3">
+						<div class="col">
+							<div class="form-floating">
+								<input type="text" class="form-control"
+									   id="floatingTitle"
+									   name="title"
+									   placeholder="Title"
+									   value="@CreateBook.Title">
+								<label for="floatingEmail">Title</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating">
+								<input type="text" class="form-control"
+									   id="floatingAuthor"
+									   name="author"
+									   placeholder="Author"
+									   value="@CreateBook.Author">
+								<label for="floatingEmail">Author</label>
+							</div>
+						</div>
+					</div>
+					<div class="row row-cols-2 row-cols-sm-3 mb-3 g-3">
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="text" class="form-control"
+									   id="floatingCategory"
+									   name="category"
+									   placeholder="Category"
+									   value="@CreateBook.CategoryId">
+								<label for="floatingCategory">Category</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="text" class="form-control"
+									   id="floatingGenre"
+									   name="genre"
+									   placeholder="Genre"
+									   value="@CreateBook.GenreId">
+								<label for="floatingGenre">Genre</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="text" class="form-control"
+									   id="floatingYear"
+									   name="year"
+									   placeholder="Year"
+									   value="@CreateBook.YearOfPrint">
+								<label for="floatingYear">Year</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="text" class="form-control"
+									   id="floatingLength"
+									   name="length"
+									   placeholder="Length"
+									   value="@CreateBook.Length">
+								<label for="floatingYear">Length</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="text" class="form-control"
+									   id="floatingPrice"
+									   name="price"
+									   placeholder="Price"
+									   value="@CreateBook.Price">
+								<label for="floatingPrice">Price</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-floating mb-2">
+								<input type="number" class="form-control"
+									   id="floatingStock"
+									   name="stock"
+									   placeholder="Amount"
+									   value="@CreateBook.Stock">
+								<label for="floatingStock">Amount</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer text-muted py-3">
+					<div class="d-flex justify-content-center justify-content-sm-end">
+						<button type="submit" id="saveButton" class="btn btn-secondary" disabled>Save Changes</button>
+					</div>
+				</div>
+			</EditForm>
+		</div>
+	</div>
+</div>
+@code {
+	protected Book CreateBook = new Book();
+
+	private async void AddBook()
+	{
+		var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");
+
+		string title = await authModule.InvokeAsync<string>("GetInputValue", "floatingTitle");
+		string author = await authModule.InvokeAsync<string>("GetInputValue", "floatingAuthor");
+		int category = await authModule.InvokeAsync<int>("GetInputValue", "floatingCategory");
+		string genre = await authModule.InvokeAsync<string>("GetInputValue", "floatingGenre");
+		int year = await authModule.InvokeAsync<int>("GetInputValue", "floatingYear");
+		int length = await authModule.InvokeAsync<int>("GetInputValue", "floatingLength");
+		double price = await authModule.InvokeAsync<double>("GetInputValue", "floatingPrice");
+		int stock = await authModule.InvokeAsync<int>("GetInputValue", "floatingInStock");
+
+		CreateBook.Title = title;
+		CreateBook.Author = author;
+		CreateBook.CategoryId = category;
+		CreateBook.GenreId = genre;
+		CreateBook.YearOfPrint = year;
+		CreateBook.Length = length;
+		CreateBook.Price = price;
+		CreateBook.Stock = stock;
+
+		await CreateBook.Commit();
+	}
+}
