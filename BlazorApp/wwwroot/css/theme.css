@@ -79,3 +79,23 @@
 .card {
     background-color: var(--bs-card-cap-bg);
 }
+
+.table-bordered-inner > :last-child > :last-child > * {
+    border-bottom-width: 0;
+}
+
+.table-bordered-inner > :not(caption) > * > :not(:last-child) {
+    border-right-width: var(--bs-border-width) 0;
+}
+
+.product-border {
+    border-bottom: 0 !important;
+    border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    background-color: var(--bs-card-cap-bg);
+}
+@media (min-width: 576px) {
+    .product-border {
+        border-right: 0 !important;
+        border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    }
+}
