@@ -76,9 +76,9 @@
     --bs-btn-hover-bg: #0252ca;
 }
 
-.card {
+/*.card {
     background-color: var(--bs-card-cap-bg);
-}
+}*/
 
 .table-bordered-inner > :last-child > :last-child > * {
     border-bottom-width: 0;
@@ -98,4 +98,7 @@
         border-right: 0 !important;
         border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
     }
+}
+.card-opacity {
+    --bs-card-bg: rgba(var(--bs-body-color-rgb), 0.5);
 }

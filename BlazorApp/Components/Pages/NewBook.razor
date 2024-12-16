@@ -2,7 +2,11 @@
 @using BlazorApp.Components.Layout
 @using BlazorApp.Models
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
 @inject IJSRuntime JSRunTime
+@attribute [Authorize]
+
 
 <div class="row justify-content-center">
 	<div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
@@ -13,7 +17,6 @@
 				<div class="row">
 					<div class="col-sm-auto d-flex justify-content-center">
 						<label class="btn m-0 p-0 avatar-edit">
-							<Avatar id="profilePageAvatar" height="192" />
 							<input type="file" class="d-none" id="input" name="image" accept="image/*">
 						</label>
 					</div>
@@ -120,9 +123,20 @@
 		</div>
 	</div>
 </div>
+
+
+
 @code {
 	protected Book CreateBook = new Book();
+	private bool isExistingUser = false;
 
+	protected async override Task OnInitializedAsync()
+	{
+		if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+		{
+			NavigationManager.NavigateTo("/");
+		}
+	}
 	private async void AddBook()
 	{
 		var authModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/auth.js");

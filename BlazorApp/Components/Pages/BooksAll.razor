@@ -5,59 +5,63 @@
 
 <PageTitle>All Books</PageTitle>
 
-<div class="container">
-	<div class="col-10">
-		<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
-	</div>
-
-	<div class="row">
-		<div class="col-12 col-md-2 p-3">
-			<CategoryFilterComponent Categories="_categories"
-									 SelectedCategories="_selectedCategories"
-									 OnCategorySelected="OnCategoryClick" />
-
-			<GenreFilterComponent Genres="_genres"
-								  SelectedGenres="_selectedGenres"
-								  OnGenreSelected="OnGenreClick" />
+<div class="card card-opacity">
+	<div class="card-body">
+		@* <div class="row">
+		<div class="col-10 justify-content-end">
+			
 		</div>
+		</div> *@
+		<div class="row">
+			<div class="col-12 col-md-3  ms-3">
+				<CategoryFilterComponent Categories="_categories"
+										 SelectedCategories="_selectedCategories"
+										 OnCategorySelected="OnCategoryClick" />
 
-		<main class="col-12 col-md-8">
-
-			<div class="py-3 ">
-				@if (isLoading)
-				{
-					<div class="text-center">
-						<p>Loading books...</p>
-					</div>
-				}
-				else
-				{
-					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-						@if (_filteredBooks != null && _filteredBooks.Any())
-						{
-							@foreach (Book book in _filteredBooks)
-							{
-								<BookComponent book="book"></BookComponent>
-							}
-						}
-						else
-						{
-							<p style="margin-left: 20px;">No books found based on your filters...</p>
-						}
-					</div>
-				}
+				<GenreFilterComponent Genres="_genres"
+									  SelectedGenres="_selectedGenres"
+									  OnGenreSelected="OnGenreClick" />
 			</div>
-		</main>
-		@* to be implemented! *@
-		<div class="container">
-			<p class="float-end mb-1">
-				<a href="#">Back to top</a>
-			</p>
+
+			<div class="col-12 col-md-8 ms-5">
+				<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
+				<div class="py-3 ">
+					@if (isLoading)
+					{
+						<div class="text-center">
+							<p>Loading books...</p>
+						</div>
+					}
+					else
+					{
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+							@if (_filteredBooks != null && _filteredBooks.Any())
+							{
+								@foreach (Book book in _filteredBooks)
+								{
+									<BookComponent book="book"></BookComponent>
+								}
+							}
+							else
+							{
+								<p style="margin-left: 20px;">No books found based on your filters...</p>
+							}
+						</div>
+					}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+@* to be implemented! *@
+<div class="container position-fixed mb-1">
 
+	<a class="bi-arrow-up-square-fill" @onclick="NavigateToUrl"> Back to top</a>
+
+</div>
 @code {
+	[Inject]
+	private NavigationManager Navigation { get; set; }
 
 	private ModelList<Category> _categories = new ModelList<Category>();
 	private ModelList<Book> _books = new ModelList<Book>();
@@ -67,7 +71,7 @@
 	private HashSet<int> _selectedCategories = new HashSet<int>();
 	private HashSet<int> _selectedGenres = new HashSet<int>();
 	private bool isLoading = false;
-	
+
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -144,5 +148,10 @@
 
 		isLoading = false;
 		StateHasChanged();
+	}
+
+	private void NavigateToUrl()
+	{
+		Navigation.NavigateTo("https://localhost:7130/books", true);
 	}
 }

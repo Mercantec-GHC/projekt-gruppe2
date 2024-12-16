@@ -25,11 +25,11 @@
 @if (book != null)
 {
 	<div class="col">
-		<div class="card shadow-sm d-flex">
+		<div class="card shadow p-2 my-4 d-flex">
 			<NavLink href=@($"/books/{book.Id}")>
 				<img src="@($"/images/3.jpg")"
 					 class="bd-placeholder-img card-img-top"
-					 style="object-fit: cover; height: 200px;" role="img"
+					 style="object-fit: cover; height: 100;" role="img"
 					 alt="@book.Title">
 			</NavLink>
 
@@ -51,7 +51,7 @@
 					<NavLink class="btn btn-sm btn-light btn-outline-dark" href=@($"/books/{book.Id}")>
 						More Info
 					</NavLink>
-					<a href="#" class="btn btn-sm btn-light btn-outline-dark ml-2">Add to cart</a>
+					<a href="/Cart" class="btn btn-sm btn-light btn-outline-dark ml-2">Add to cart</a>
 				</div>
 			</div>
 		</div>
