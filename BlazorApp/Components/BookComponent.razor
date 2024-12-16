@@ -25,17 +25,20 @@
 @if (book != null)
 {
 	<div class="col">
-		<div class="card shadow-sm d-flex">
+		<div class="card shadow my-4 d-flex">
 			<NavLink href=@($"/books/{book.Id}")>
+				<div class="ratio ratio-1x1">
 				<img src="@($"/images/3.jpg")"
-					 class="bd-placeholder-img card-img-top"
-					 style="object-fit: cover; height: 200px;" role="img"
-					 alt="@book.Title">
+						 class="img-fluid card-img-top"
+						 style="object-fit: cover;"
+						 alt="@book.Title">
+					 </div>
 			</NavLink>
 
-			<div class="card-header flex-nowrap ">
-				
-				<h4 class="card-title">@book.Title</h4>
+			<div class="card-header">
+				<h4 class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+					@book.Title
+				</h4>
 				<small class="card-subtitle"><i>by @book.Author</i></small>
 				
 			</div>
@@ -47,11 +50,11 @@
 						@(book.IsInStock ? "in stock" : "out of stock")
 					</span>
 				</div>
-				<div class="d-flex justify-content-between mb-2">
+				<div class="d-flex justify-content-between">
 					<NavLink class="btn btn-sm btn-light btn-outline-dark" href=@($"/books/{book.Id}")>
 						More Info
 					</NavLink>
-					<a href="#" class="btn btn-sm btn-light btn-outline-dark ml-2">Add to cart</a>
+					<a href="/Cart" class="btn btn-sm btn-light btn-outline-dark ml-2">Add to cart</a>
 				</div>
 			</div>
 		</div>
