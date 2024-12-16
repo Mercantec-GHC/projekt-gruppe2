@@ -2,49 +2,52 @@
 @using BlazorApp.Models;
 @attribute [Authorize(Roles = "admin")]
 @inject IWebHostEnvironment env
-
-<div class="card card-opacity shadow">
-    <h1 class="card-header">Administrator Panel</h1>
-
-    @* <div class="card-body">
-        <h3 class="m-0">User management.</h3>
-    </div>
-    <hr class="border m-0" /> *@
-
+<div class="card card-opacity">
     <div class="card-body">
-        <h4 class="fw-bold mb-3">User management:</h4>
+        <div class="card shadow">
+            <h1 class="card-header">Administrator Panel</h1>
 
-        <div class="card card-table overflow-hidden">
-            <table class="table table-hover table-bordered-inner m-0 fs-5 user-select-none">
-                <thead>
-                    <tr class="fst-italic">
-                        <th scope="col">Id:</th>
-                        <th scope="col">Username:</th>
-                        <th scope="col">Full Name:</th>
-                        @* <th class="text-nowrap" scope="col">Date Registered:</th> *@
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (User user in users)
-                    {
-                        <tr  @onclick="() => OpenAdminModal(user.Id)" style="cursor: pointer;">
-                            <th scope="row">@user.Id</th>
-                            <td>@user.Username</td>
-                            <td class="w-100">@user.FirstName @user.LastName</td>
-                            @* <td>@user.CreatedAt.ToShortDateString()</td> *@
-                            @* <td class="text-end">
-                                <button class="btn btn-primary" @onclick="() => OpenAdminModal(user.Id)">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                            </td> *@
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            @* <div class="card-body">
+                <h3 class="m-0">User management.</h3>
+            </div>
+            <hr class="border m-0" /> *@
+
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">User management:</h4>
+
+                <div class="card card-table overflow-hidden">
+                    <table class="table table-hover table-bordered-inner m-0 fs-5 user-select-none">
+                        <thead>
+                            <tr class="fst-italic">
+                                <th scope="col">Id:</th>
+                                <th scope="col">Username:</th>
+                                <th scope="col">Full Name:</th>
+                                @* <th class="text-nowrap" scope="col">Date Registered:</th> *@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (User user in users)
+                            {
+                                <tr  @onclick="() => OpenAdminModal(user.Id)" style="cursor: pointer;">
+                                    <th scope="row">@user.Id</th>
+                                    <td>@user.Username</td>
+                                    <td class="w-100">@user.FirstName @user.LastName</td>
+                                    @* <td>@user.CreatedAt.ToShortDateString()</td> *@
+                                    @* <td class="text-end">
+                                        <button class="btn btn-primary" @onclick="() => OpenAdminModal(user.Id)">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                    </td> *@
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @* <div class="card-footer text-muted">
+                </div> *@
         </div>
     </div>
-    @* <div class="card-footer text-muted">
-    </div> *@
 </div>
 
 <Modal @ref="modalAdmin" Id="adminModal">

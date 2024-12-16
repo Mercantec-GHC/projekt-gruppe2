@@ -76,10 +76,6 @@
     --bs-btn-hover-bg: #0252ca;
 }
 
-/*.card {
-    background-color: var(--bs-card-cap-bg);
-}*/
-
 .card-table th, .card-table td {
     background-color: var(--bs-card-cap-bg) !important;
 }
@@ -102,4 +98,8 @@
         border-right: 0 !important;
         border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
     }
+}
+
+.card-opacity {
+    --bs-card-bg: rgba(var(--bs-dark-rgb), 0.5);
 }
