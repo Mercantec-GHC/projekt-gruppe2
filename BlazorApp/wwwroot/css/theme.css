@@ -76,15 +76,19 @@
     --bs-btn-hover-bg: #0252ca;
 }
 
-.card {
+/*.card {
     background-color: var(--bs-card-cap-bg);
+}*/
+
+.card-table th, .card-table td {
+    background-color: var(--bs-card-cap-bg) !important;
 }
 
 .table-bordered-inner > :last-child > :last-child > * {
     border-bottom-width: 0;
 }
 
-.table-bordered-inner > :not(caption) > * > :not(:last-child) {
+.table-bordered-inner > * > * > :not(:last-child) {
     border-right-width: var(--bs-border-width) 0;
 }
 

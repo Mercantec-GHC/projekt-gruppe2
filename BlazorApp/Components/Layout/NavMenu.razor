@@ -5,8 +5,8 @@
 
 <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom shadow">
     <div class="container">
-        <a class="navbar-brand p-1 me-1 me-lg-4" href="">
-            <img src="@($"/images/logo_02.png")" class="d-block my-1" width="40" height="40" alt="Logo">
+        <a class="navbar-brand p-0" href="">
+            <img src="@($"/images/logo_02.png")" height="40" alt="Logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -67,9 +67,9 @@
                                 <Avatar id="userAvatar" height="40" />
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">Account</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">User page</NavLink></li>
                                 <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Settings</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Account</NavLink></li>
                                 @if (IsUserAdmin(context.User))
                                 {
                                     <li><hr class="dropdown-divider"></li>
