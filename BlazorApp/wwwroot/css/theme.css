@@ -76,8 +76,8 @@
     --bs-btn-hover-bg: #0252ca;
 }
 
-.card {
-    background-color: var(--bs-card-cap-bg);
+.card-table th, .card-table-td {
+    background-color: var(--bs-card-cap-bg) !important; 
 }
 
 .table-bordered-inner > :last-child > :last-child > * {

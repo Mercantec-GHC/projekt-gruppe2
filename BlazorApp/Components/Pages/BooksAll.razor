@@ -6,14 +6,9 @@
 <PageTitle>All Books</PageTitle>
 
 <div class="card card-opacity">
-	<div class="card-body">
-		@* <div class="row">
-		<div class="col-10 justify-content-end">
-			
-		</div>
-		</div> *@
+	<div class="card-body px-3">
 		<div class="row">
-			<div class="col-12 col-md-3  ms-3">
+			<div class="col-12 col-md-3 ">
 				<CategoryFilterComponent Categories="_categories"
 										 SelectedCategories="_selectedCategories"
 										 OnCategorySelected="OnCategoryClick" />
@@ -23,7 +18,7 @@
 									  OnGenreSelected="OnGenreClick" />
 			</div>
 
-			<div class="col-12 col-md-8 ms-5">
+			<div class="col-12 col-md-8">
 				<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
 				<div class="py-3 ">
 					@if (isLoading)
