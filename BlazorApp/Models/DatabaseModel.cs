@@ -33,6 +33,21 @@ namespace BlazorApp.Models
             return ((isNumeric || input is bool) ? $"{input}" : (input is null ? "NULL" : $"'{input}'"));
         }
 
+        public T Copy()
+        {
+            var item = (T)Activator.CreateInstance(typeof(T));
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            
+            foreach (var property in properties)
+            {
+                var attributes = property.GetCustomAttributes(false);
+                
+                property.SetValue(item, property.GetValue(this));
+            }
+
+            return item;
+        }
+
         public async Task Commit()
         {
             string tableName = GetTableName();
@@ -81,7 +96,8 @@ namespace BlazorApp.Models
                 }
             }
 
-            string query = $"DO $$"
+            string query = $"SET datestyle = DMY;"
+                + $"DO $$"
                 + $" BEGIN"
                 + $" UPDATE {tableName} SET {update}"
                 + $" WHERE {primaryKey} = {primaryValue};"
