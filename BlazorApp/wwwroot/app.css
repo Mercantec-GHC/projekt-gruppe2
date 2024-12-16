@@ -27,6 +27,18 @@ h1:focus {
     outline: none;
 }
 
+.background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("/images/1.jpg");
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    z-index: -999;
+}
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
@@ -80,7 +92,7 @@ h1:focus {
     }
 }
 
-.nav-item:hover .avatar-img {
+.nav-item:hover .avatar-img, .show .avatar-img {
     box-shadow: 0 0 0 .125rem var(--bs-nav-link-hover-color);
 }
 
