@@ -12,49 +12,54 @@
         <div class="row justify-content-center">
             <div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
                 <EditForm FormName="Register" Model="this" OnSubmit="HandleRegister" id="registerForm" Context="formContext">
-                    <div class="card shadow">
-                        <h1 class="card-header">Register</h1>
+                    
+                    <div class="card card-opacity">
                         <div class="card-body">
+                            <div class="card shadow">
+                                <h1 class="card-header">Register</h1>
+                                <div class="card-body">
 
-                                <div class="mb-3">
-                                    <label for="registerInputEmail" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="registerInputEmail" required />
-                                </div>
+                                    <div class="mb-3">
+                                        <label for="registerInputEmail" class="form-label">Email address</label>
+                                        <input type="email" class="form-control" id="registerInputEmail" required />
+                                    </div>
 
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-3">
-                                            <label for="registerInputFirstName" class="form-label">First name</label>
-                                            <input type="text" class="form-control" id="registerInputFirstName" required />
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="registerInputFirstName" class="form-label">First name</label>
+                                                <input type="text" class="form-control" id="registerInputFirstName" required />
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="registerInputLastName" class="form-label">Last name</label>
+                                                <input type="text" class="form-control" id="registerInputLastName" required />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="mb-3">
-                                            <label for="registerInputLastName" class="form-label">Last name</label>
-                                            <input type="text" class="form-control" id="registerInputLastName" required />
-                                        </div>
+
+                                    <div class="mb-3">
+                                        <label for="registerInputUsername" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="registerInputUsername" required style="text-transform:lowercase;" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerInputPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="registerInputPassword" required />
+                                    </div>
+                                    <div class="mb-3" style="display:none;" id="registerFlashMessage">
+                                        <p class="text-danger">Email or Username is already in use!</p>
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="registerInputUsername" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="registerInputUsername" required style="text-transform:lowercase;" />
+                                <div class="card-footer text-muted py-3">
+                                    <button type="submit" class="btn btn-primary" style="width:140px;">
+                                        <span id="registerSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                                        <span id="registerText" role="status">Sign up</span>
+                                    </button>
+                                    <a class="btn btn-link d-inline-block" href="login">Login</a>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="registerInputPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="registerInputPassword" required />
-                                </div>
-                                <div class="mb-3" style="display:none;" id="registerFlashMessage">
-                                    <p class="text-danger">Email or Username is already in use!</p>
-                                </div>
-                        </div>
-
-                        <div class="card-footer text-muted py-3">
-                            <button type="submit" class="btn btn-primary" style="width:140px;">
-                                <span id="registerSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
-                                <span id="registerText" role="status">Sign up</span>
-                            </button>
-                            <a class="btn btn-link d-inline-block" href="login">Login</a>
+                            </div>
                         </div>
                     </div>
                 </EditForm>
