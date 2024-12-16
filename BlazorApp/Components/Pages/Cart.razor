@@ -84,7 +84,6 @@
 				//loads the cookie
 				var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
 				string cookieValue = await cookieModule.InvokeAsync<string>("getCookie", CookieName);
-				Console.WriteLine(cookieValue);
 				// splits cookie into an array
 				string[] cartArray = cookieValue.Split(",");
 				// creates array thats the lengh of cartArray
