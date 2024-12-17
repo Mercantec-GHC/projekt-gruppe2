@@ -5,44 +5,51 @@
 
 <PageTitle>All Books</PageTitle>
 
-<div class="card card-opacity">
-	<div class="card-body px-3">
-		<div class="row">
-			<div class="col-12 col-md-3 ">
-				<CategoryFilterComponent Categories="_categories"
-										 SelectedCategories="_selectedCategories"
-										 OnCategorySelected="OnCategoryClick" />
+<div class="container-fluid">
 
-				<GenreFilterComponent Genres="_genres"
-									  SelectedGenres="_selectedGenres"
-									  OnGenreSelected="OnGenreClick" />
-			</div>
+	<div class="card card-opacity">
+		<div class="card-body ">
+			<div class="row px-3">
 
-			<div class="col-12 col-md-8">
-				<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
-				<div class="py-3 ">
-					@if (isLoading)
-					{
-						<div class="text-center">
-							<p>Loading books...</p>
-						</div>
-					}
-					else
-					{
-						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-							@if (_filteredBooks != null && _filteredBooks.Any())
+				<div class="col-12 col-md-3 my-2">
+					<div class="mx-sm-4">
+						<CategoryFilterComponent Categories="_categories"
+												 SelectedCategories="_selectedCategories"
+												 OnCategorySelected="OnCategoryClick" />
+
+						<GenreFilterComponent Genres="_genres"
+											  SelectedGenres="_selectedGenres"
+											  OnGenreSelected="OnGenreClick" />
+					</div>
+				</div>
+				<div class="col-12 col-md-9">
+					<div class="mx-sm-4">
+						<SearchComponent SearchBookCallback="OnSearch"></SearchComponent>
+						<div class="py-3 ">
+							@if (isLoading)
 							{
-								@foreach (Book book in _filteredBooks)
-								{
-									<BookComponent book="book"></BookComponent>
-								}
+								<div class="text-center">
+									<p>Loading books...</p>
+								</div>
 							}
 							else
 							{
-								<p style="margin-left: 20px;">No books found based on your filters...</p>
+								<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+									@if (_filteredBooks != null && _filteredBooks.Any())
+									{
+										@foreach (Book book in _filteredBooks)
+										{
+											<BookComponent book="book"></BookComponent>
+										}
+									}
+									else
+									{
+										<p style="margin-left: 20px;">No books found based on your filters...</p>
+									}
+								</div>
 							}
 						</div>
-					}
+					</div>
 				</div>
 			</div>
 		</div>
