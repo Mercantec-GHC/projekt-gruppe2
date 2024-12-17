@@ -8,33 +8,59 @@
 {
 	<div class="card card-opacity">
 		<div class="card-body">
-			<div class="row">
-				<div class="col-md-3">
-					<div class="sticky-top">
-						<span class="badge text-bg-info position-absolute top-0 start-10 translate-middle-y badge rounded-tab">
-							@if (_categoryLookup.ContainsKey(Book.CategoryId))
-							{
-								@(_categoryLookup[Book.CategoryId])
-							}
-						</span>
-						<img src="@($"/images/3.jpg")"
-							 class="img-fluid rounded shadow"
-							 role="img"
-							 alt="@Book.Title">
-					</div>
+			<div class="row ">
+				<div class="col-12 col-md-4">
 
-					<div class="list-group mt-3 ">
-						<span class="active text-alert fw-semibold text-center">
-							<h3 style="font-family: 'Book Antiqua' ">
-								@Book.Price.ToString("#,###.00") dkk
-							</h3>
-						</span>
-						<a href="/Cart" class="btn btn-success">Add to cart</a>
-					</div>
-				</div>
+					<div class="card d-flex bg-transparent border-0">
+						<div class="card-body ">
+								<span class="badge text-bg-primary p-2 position-absolute top-10 start-10 translate-middle-y rounded-tab">
+									@if (_categoryLookup.ContainsKey(Book.CategoryId))
+									{
+										@(_categoryLookup[Book.CategoryId])
+									}
+								</span>
+								<img src="@($"/images/books/{Book.Id}.jpg")"
+									 class="card-img-top rounded shadow"
+									 role="img"
+									 alt="@Book.Title"
+									 loading="lazy"
+									 data-bs-toggle="modal"
+									 style="object-fit: cover"
+									 data-bs-target="#bookImageModal">
+							
+							<div class="modal fade" id="bookImageModal" tabindex="-1" aria-labelledby="bookImageModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
 
-				<div class="col-md-8">
-					<div class="card mb-3 shadow">
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										<div class="modal-body text-center">
+											<img src="@($"/images/books/{Book.Id}.jpg")" class="img-fluid rounded" alt="@Book.Title">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="list-group mt-3 text-center px-3">
+								<div class="price-display py-2 mb-3">
+									<span class="badge fs-4 px-2 py-2 shadow-lg">
+										@Book.Price.ToString("#,###.00") dkk
+									</span>
+								</div>
+
+								<div class="cart-display py-2 mb-3">
+									<a href="/Cart" class="btn align-items-center justify-content-center text-white fs-4 px-2 py-2 shadow-lg">
+										<i class="bi bi-cart-plus-fill me-2"></i>
+										<strong>Add to Cart</strong>
+									</a>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+					
+
+				<div class="col-12 col-md-8">
+					<div class="card mb-3 mt-3 shadow">
 						<div class="card-header bg-light-subtle">
 							<h1 class="fw-bold mb-0"> @Book.Title</h1>
 							<h3 class="text-secondary-emphasis">by @Book.Author</h3>
@@ -118,6 +144,12 @@
 	public Book? Book { get; set; }
 	[Parameter]
 	public HashSet<int> Genres { get; set; }
+	private bool isModalOpen = false;
+
+	private void CloseModal()
+	{
+		isModalOpen = false;
+	}
 
 	private HashSet<int> _selectedGenres = new HashSet<int>();
 	private Dictionary<int, string> _categoryLookup = new Dictionary<int, string>();
@@ -136,3 +168,31 @@
 	}
 }
 
+	<style>
+	.price-display {
+		background: #158196;
+		color: #f8f9fa; 
+		border-radius: 15px; 
+		font-family: 'Orbitron', sans-serif; 
+	}
+
+	.cart-display {
+		background: #158196;
+		border-radius: 15px;
+		font-family: 'Orbitron', sans-serif;
+	}
+
+		.cart-display:hover {
+			transform: scale(1.05);
+			background: #6f4479;
+		}
+
+	.btn-success {
+		transition: background-color 0.3s, transform 0.2s;
+	}
+
+		.btn-success:hover {
+			background-color: #218838;
+			transform: translateY(-2px);
+		}
+	</style>
