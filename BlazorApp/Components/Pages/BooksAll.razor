@@ -2,6 +2,7 @@
 @using BlazorApp.Models
 @using BlazorApp.Service
 @inject DBService DbService
+@inject IJSRuntime JSRunTime
 
 <PageTitle>All Books</PageTitle>
 
@@ -49,11 +50,14 @@
 	</div>
 </div>
 @* to be implemented! *@
-<div class="container position-fixed mb-1">
-
+@* <div class="container position-fixed mb-1">
 	<a class="bi-arrow-up-square-fill" @onclick="NavigateToUrl"> Back to top</a>
+</div> *@
 
+<div class="scroll-top-container">
+	<button type="button" id="scroll_top" @onclick=OnScrollClicked class="btn btn-primary text-nowrap d-none"><i class="bi-arrow-up-square-fill"></i> To top</button>
 </div>
+
 @code {
 	[Inject]
 	private NavigationManager Navigation { get; set; }
@@ -76,6 +80,25 @@
 		_genres = await Genre.QueryAll();
 		isLoading = false;
 		await ApplyFilters();
+	}
+
+	protected override async void OnAfterRender(bool firstRender)
+	{
+		try
+		{
+			var jsModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/books.js");
+			await jsModule.InvokeVoidAsync("AttachScrollEvents");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error attaching JS libraries: {ex.Message}");
+		}
+	}
+
+	private async void OnScrollClicked()
+	{
+		var jsModule = await JSRunTime.InvokeAsync<IJSObjectReference>("import", "./js/books.js");
+		await jsModule.InvokeVoidAsync("ScrollToTop");
 	}
 
 	private async Task OnCategoryClick(Category category)
