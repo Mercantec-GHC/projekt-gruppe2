@@ -62,7 +62,7 @@ namespace BlazorApp.Controllers
         public async Task<ActionResult> RegisterPost(RegisterData value)
         {
             ModelList<User> users = await BlazorApp.Models.User.QueryBy("OR", ("email", value.Email), ("username", value.Username));
-            
+
             if (!users.Any())
             {
                 User newUser = new User
@@ -70,7 +70,7 @@ namespace BlazorApp.Controllers
                     Email = value.Email,
                     FirstName = value.FirstName,
                     LastName = value.LastName,
-                    Username = value.Username,
+                    Username = value.Username.ToLower(),
                     Password = BCrypt.Net.BCrypt.EnhancedHashPassword(value.Password, 13),
                     Role = "user",
                     CreatedAt = DateTime.UtcNow

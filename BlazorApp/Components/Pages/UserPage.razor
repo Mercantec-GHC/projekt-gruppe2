@@ -1,5 +1,9 @@
 ﻿@page "/u/{Username}"
 @using BlazorApp.Models;
+@using System.Security.Claims;
+
+@inject IWebHostEnvironment env
+@inject AuthenticationStateProvider AuthProvider
 
 @if (User == null)
 {
@@ -7,16 +11,45 @@
 }
 else if (User.Username != null)
 {
-	<div class="card shadow">
-		<h1 class="card-header">@User.FirstName @User.LastName</h1>
-		<div class="card-body">
-			@User.CreatedAt.ToShortDateString()
-		</div>
-		<h3 class="card-header border-top">Books for sale.</h3>
-		<div class="card-body">
-			<BookComponent books="Books"></BookComponent>
-		</div>
-		<div class="card-footer">
+	<PageTitle>@User.FirstName @User.LastName</PageTitle>
+
+	<div class="card card-opacity">
+        <div class="card-body">
+			<div class="card shadow">
+				<h1 class="card-header">@User.FirstName @User.LastName</h1>
+				<div class="card-body">
+					<div class="row justify-content-center">
+						<div class="col-sm-auto d-flex justify-content-center mb-3 mb-sm-0">
+							<img src="@imageUrl" height="128" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+						</div>
+						<div class="col-auto col-sm align-self-center text-nowrap">
+							<h3 class="fst-italic mt-sm-0 mb-0">Account created:</h3>
+							<h3 class="fst-italic mb-sm-0">@User.CreatedAt.ToShortDateString()</h3>
+						</div>
+						<div class="col-auto text-center text-sm-end">
+							@if (isOwnPage)
+							{
+								<a href="books/create-book" class="btn btn-primary text-nowrap">Add Book for sale.</a>
+							}
+							else
+							{
+								<button type="button" class="btn btn-primary text-nowrap" disabled>Contact Seller.</button>
+							}
+						</div>
+					</div>
+				</div>
+				<h3 class="card-header border-top">Books for sale.</h3>
+				<div class="card-body">
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+						@foreach (Book book in Books)
+						{
+							<BookComponent book=book />
+						}
+					</div>
+				</div>
+				<div class="card-footer">
+				</div>
+			</div>
 		</div>
 	</div>
 }
@@ -25,13 +58,44 @@ else if (User.Username != null)
 	[Parameter]
 	public string Username { get; set; }
 
+	private string imageUrl = "";
+	private bool isOwnPage = false;
+
 	private User User = new User();
 	private ModelList<Book> Books = new ModelList<Book>();
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnParametersSetAsync()
 	{
 		ModelList<User> users = await User.QueryBy(("username", Username));
 		User = users.FirstOrDefault();
 		Books = await User.GetBooks();
+
+		imageUrl = @GetUserAvatar(User.Id);
+
+		var authstate = await AuthProvider.GetAuthenticationStateAsync();
+		var user = authstate.User;
+
+		var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
+		if (userId != null)
+		{
+			int id;
+			if (int.TryParse(userId.Value, out id))
+			{
+				isOwnPage = User.Id == id;
+			}
+		}
+	}
+
+	private string GetUserAvatar(int userId)
+	{
+		var rootPath = Path.Combine(env.ContentRootPath, "files");
+		var filePath = $"avatars/{userId}.png";
+		var fullPath = Path.Combine(rootPath, filePath);
+
+		if (System.IO.File.Exists(fullPath))
+		{
+			return $"files/{filePath}";
+		}
+		else return "images/no_avatar.png";
 	}
 }

@@ -1,26 +1,192 @@
 ﻿@page "/books/{Id:int}"
 @using BlazorApp.Models
 @inject NavigationManager Navigation
+@inject IWebHostEnvironment env
 
-@if(Book != null)
+
+
+@if (Book != null)
 {
-    <h1>Book: @Book.Title</h1>
-    <h1>by @Book.Author</h1>
-    
+	<div class="card card-opacity">
+		<div class="card-body">
+			<div class="row ">
+				<div class="col-12 col-md-4">
+
+					<div class="card d-flex bg-transparent border-0">
+						<div class="card-body ">
+								<span class="badge text-bg-primary p-2 position-absolute top-10 start-10 translate-middle-y rounded-tab">
+									@if (_categoryLookup.ContainsKey(Book.CategoryId))
+									{
+										@(_categoryLookup[Book.CategoryId])
+									}
+								</span>
+								<img src="@GetBookImage()"
+									 class="card-img-top rounded shadow"
+									 role="img"
+									 alt="@Book.Title"
+									 loading="lazy"
+									 data-bs-toggle="modal"
+									 style="object-fit: cover"
+									 data-bs-target="#bookImageModal">
+							
+							<div class="modal fade" id="bookImageModal" tabindex="-1" aria-labelledby="bookImageModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										<div class="modal-body text-center">
+											<img src="@GetBookImage()" class="img-fluid rounded" alt="@Book.Title">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="list-group mt-3 text-center px-3">
+								<div class="price-display py-2 mb-3">
+									<span class="badge fs-4 px-2 py-2">
+										@Book.Price.ToString("#,###.00") dkk
+									</span>
+								</div>
+
+								<div class="cart-display py-2 mb-3">
+									<a href="/Cart" class="btn align-items-center justify-content-center text-white fs-4 px-2 py-2">
+										<i class="bi bi-cart-plus-fill me-2"></i>
+										<strong>Add to Cart</strong>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+					
+
+				<div class="col-12 col-md-8">
+					<div class="card mb-3 mt-3 shadow">
+						<div class="card-header bg-light-subtle">
+							<h1 class="fw-bold mb-0"> @Book.Title</h1>
+							<h3 class="text-secondary-emphasis">by @Book.Author</h3>
+						</div>
+						<div class="card-body">
+
+							<p class="card-text">
+								<h5>Genre:</h5>
+								@if (_genres != null && _genres.Any() && !string.IsNullOrEmpty(Book.GenreId))
+								{
+									var genreIds = Book.GenreId.Split(',');
+
+									@foreach (var genreId in genreIds)
+									{
+										var genreIdInt = int.Parse(genreId);
+										var genre = _genres.FirstOrDefault(g => g.Id == genreIdInt);
+										if (genre != null)
+										{
+											@genre.Name
+										}
+									}
+								}
+							</p>
+							@if (Book.CategoryId == 1)
+							{
+								<p class="card-text">
+									<h5>Condition:</h5>  @(Book.IsNewCondition ? "New" : "Used")
+								</p>
+							}
+							else
+							{
+
+							}
+							<p class="card-text"> <h5>Year:</h5>  @Book.YearOfPrint</p>
+
+							@if (Book.CategoryId == 1)
+							{
+								<p class="card-text">
+									<h5>In stock: </h5>  @Book.Stock pcs.
+								</p>
+							}
+							else
+							{
+
+							}
+							<p class="card-text">
+								<small class="text-body-secondary">
+									@if (Book.CategoryId == 3)
+									{
+										<span>Audio length: @Book.Length.ToString() mins.</span>
+									}
+									else
+									{
+										<span>Pages: @Book.Length.ToString() </span>
+									}
+
+								</small>
+							</p>
+						</div>
+						<div class="card-footer">
+							<p class="card-text">
+								<h5 class="m-0">Seller: <a  href="@($"u/{seller.Username}")">@seller.FirstName @seller.LastName</a></h5>
+							</p>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="card mb-3 ">
+							<div class="card-body">
+								<p class="card-text"> <h5>Description:</h5>  @Book.Description</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
+
+
 
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-    [Parameter]
-    public Book? Book { get; set; }
-    private ModelList<Book> _books = new ModelList<Book>();
+	[Parameter]
+	public int Id { get; set; }
+	[Parameter]
+	public Book? Book { get; set; }
+	[Parameter]
+	public HashSet<int> Genres { get; set; }
+	private bool isModalOpen = false;
+	private User seller = new User();
 
-    protected override async Task OnInitializedAsync()
-    {
-        _books = await Book.QueryAll();
-        Book = _books.FirstOrDefault(b => b.Id == Id);
-    }
+	private void CloseModal()
+	{
+		isModalOpen = false;
+	}
+
+	private HashSet<int> _selectedGenres = new HashSet<int>();
+	private Dictionary<int, string> _categoryLookup = new Dictionary<int, string>();
+
+	private ModelList<Book> _books = new ModelList<Book>();
+	private ModelList<Genre> _genres = new ModelList<Genre>();
+	private ModelList<Category> _categories = new ModelList<Category>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		_books = await Book.QueryAll();
+		_genres = await Genre.QueryAll();
+		_categories = await Category.QueryAll();
+		_categoryLookup = _categories.ToDictionary(c => c.Id, c => c.Name);
+		Book = _books.FirstOrDefault(b => b.Id == Id);
+
+		ModelList<User> users = await User.QueryBy(("id", Book.SellerId));
+		seller = users.FirstOrDefault() ?? new User();
+	}
+
+	private string GetBookImage()
+	{
+		var rootPath = Path.Combine(env.ContentRootPath, "files");
+		var filePath = $"books/{Book.Id}.jpg";
+		var fullPath = Path.Combine(rootPath, filePath);
+
+		if (System.IO.File.Exists(fullPath))
+		{
+			return $"files/{filePath}";
+		}
+		else return "images/4.png";
+	}
 }
-

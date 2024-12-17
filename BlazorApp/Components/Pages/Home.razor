@@ -4,28 +4,64 @@
 @using BlazorApp.Service
 
 <PageTitle>Home</PageTitle>
-<div class="content text-center px-3">
 
-    <div class="banner d-flex justify-content-center align-items-center">
-        <div class="hero-text">Book</div>
-        <div class="hero-text">Verse</div>
-    </div>
+<div class="content text-center px-3 px-md-5 ">
 
-    <div class="mt-5">
-        <h1>Uncover Worlds. Discover Deals.</h1>
-       
-        <div class="mt-4">
-            <button @onclick="NavigateToUrl" type="button" class="btn btn-primary me-3">I want to buy</button>
-            <button type="button" class="btn btn-primary">I want to sell</button>
-        </div>
-    </div>
+	@* <div class="card text-center border-10 mb-3">
+		<img class="card-img w-100" src="@($"/images/2.png")" alt="Hero Image" style="object-fit: cover;" />
+		<div class="card-img-overlay d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 p-3 p-md-5">
+			<div class="mb-4">
+				<span class="card-title fw-bold expand-sm" style="font-size: 8vw;">Book</span>
+				<span class="card-title fw-bold expand-sm" style="font-size: 8vw;">Verse</span>
+			</div>
+			<p class="card-text mt-2"><small> Welcome to the book marketplace. </small></p>
+
+				<hr class="w-50 my-4 border-2 border-white">
+
+				<h1 class="fs-4 fs-md-3 mt-3">Uncover Worlds. Discover Deals.</h1>
+
+			<div class="d-flex flex-column flex-md-row justify-content-center align-items-center mt-3">
+				<button @onclick="NavigateToBooks" type="button" class="btn btn-light me-0 me-md-4 mb-3 mb-md-0">I want to buy</button>
+				<button @onclick="NavigateToNewBook" type="button" class="btn btn-light">I want to sell</button>
+			</div>
+		</div>
+	</div> *@
+
+	<div class="card overflow-hidden">
+		<div class="card-home">
+			<div class="justify-content-center p-5 text-white bg-dark bg-opacity-50">
+				<h1 class="card-title fw-bold expand-sm my-5" style="font-size: 8vw;">Book Verse</h1>
+				<p class="card-text mt-2 mb-3"><small>Welcome to the book marketplace.</small></p>
+				<div class="row justify-content-center">
+					<div class="col-12 col-sm-10 col-md-8 col-lg-6">
+						<hr class="my-1 my-sm-3 my-md-4 my-lg-5 border-2 border-white">
+					</div>
+				</div>
+				<h1 class="mt-4 fs-4 fs-md-3">Uncover Worlds. Discover Deals.</h1>
+				<div class="row justify-content-center g-3 mt-3 mb-4">
+					<div class="col-auto">
+						<a href="books" class="btn btn-light buy-hover">I want to buy</a>
+					</div>
+					<div class="col-auto">
+						<a href="books/create-book" class="btn btn-light sell-hover">I want to sell</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
+
 @code {
 	[Inject]
 	private NavigationManager Navigation { get; set; }
 
-	private void NavigateToUrl()
+	private void NavigateToBooks()
 	{
 		Navigation.NavigateTo("https://localhost:7130/books", true);
+	}
+	private void NavigateToNewBook()
+	{
+		Navigation.NavigateTo("https://localhost:7130/books/create-book", true);
 	}
 }

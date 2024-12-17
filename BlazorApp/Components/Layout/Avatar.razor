@@ -3,7 +3,7 @@
 
 <AuthorizeView>
     <Authorized>
-		<img id="@id" src="@GetUserAvatar(context.User)" height="@height" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+		<img id="@id" src="@GetUserAvatar(context.User)" height="@height" class="avatar-img rounded-circle shadow-4 @Class" alt="Avatar" style="background-color: white;">
     </Authorized>
 </AuthorizeView>
 
@@ -13,6 +13,9 @@
 
 	[Parameter]
 	public string height { get; set; }
+
+	[Parameter]
+	public string Class { get; set; }
 
 	private string GetUserAvatar(ClaimsPrincipal user)
 	{

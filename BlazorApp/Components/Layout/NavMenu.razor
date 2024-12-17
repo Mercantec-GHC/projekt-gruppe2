@@ -5,8 +5,8 @@
 
 <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom shadow">
     <div class="container">
-        <a class="navbar-brand" href="">
-            <i class="bi bi-book"></i>
+        <a class="navbar-brand p-0" href="">
+            <img src="@($"/images/logo_02.png")" height="40" alt="Logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -17,40 +17,40 @@
                     <hr class="d-sm-none my-0 text-white-50">
                 </div>
                 <div class="nav-item">
-                    <NavLink class="nav-link fw-bold" href="books">
+                    <NavLink class="nav-link active fw-bold" href="books">
                         <span class="bi bi-book-half me-1" aria-hidden="true"></span>Books
                     </NavLink>
                 </div>
-                <div class="nav-item">
+               @*  <div class="nav-item">
                     <NavLink class="nav-link fw-bold" href="test">
                         <span class="bi bi-book-half me-1" aria-hidden="true"></span>Test
                     </NavLink>
-                </div>
+                </div> *@
             </div>
             <div class="navbar-nav">
 
                 <NavbarLine />
 
+                <NavLink class="nav-item active nav-link" href="cart">
+                    <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
+                    @* <div style="position: relative; width: 0; height: 0">
+                    <div style="position: absolute; left: 24px; top: -32px">
+                    <span class="badge bg-danger notification-counter d-none d-sm-inline-block">7</span>
+                    </div>
+                    </div> *@
+                    <span class="d-inline-block d-sm-none fw-bold">Cart</span>
+                    @* <span class="d-inline-block d-sm-none">(7)</span> *@
+                </NavLink>
+
                 <AuthorizeView>
                     <Authorized>
-
-                        <NavLink class="nav-item nav-link" href="cart">
-                            <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
-                            @* <div style="position: relative; width: 0; height: 0">
-                                <div style="position: absolute; left: 24px; top: -32px">
-                                    <span class="badge bg-danger notification-counter d-none d-sm-inline-block">7</span>
-                                </div>
-                            </div> *@
-                            <span class="d-inline-block d-sm-none fw-bold">Cart</span>
-                            @* <span class="d-inline-block d-sm-none">(7)</span> *@
-                        </NavLink>
 
                         <MessageMenu />
 
                     </Authorized>
                 </AuthorizeView>
 
-                <LanguageMenu/>
+               @*  <LanguageMenu/> *@
 
                 <ThemeMenu />
 
@@ -58,18 +58,18 @@
 
                 <AuthorizeView>
                     <Authorized>
-                        <div class="nav-item dropdown">
-                            <button class="nav-link navbar-img" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="nav-item dropdown py-2 py-sm-0">
+                            <button class="nav-link dropdown-toggle navbar-img" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @* @{
                                     string avatar = $"images/avatars/{GetUserId(context.User)}.png";
                                     <img id="userAvatar" src="@avatar" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
                                 } *@
-                                <Avatar id="userAvatar" height="40" />
+                                <Avatar id="userAvatar" height="40" Class="me-1"/>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">Account</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Settings</NavLink></li>
+                            <ul class="dropdown-menu dropdown-menu-end mt-3 mt-sm-0">
+                                <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">User page</NavLink></li>
+                                @* <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li> *@
+                                <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Account</NavLink></li>
                                 @if (IsUserAdmin(context.User))
                                 {
                                     <li><hr class="dropdown-divider"></li>
@@ -80,21 +80,23 @@
                             </ul>
                         </div>
                     </Authorized>
+
                     <NotAuthorized>
                         <!-- Button trigger login modal -->
                         @if (!IsLoginPage())
                         {
                             <div class="nav-item">
-                                <button type="button" class="nav-link fw-bold d-inline-block" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <button type="button" class="nav-link active fw-bold d-inline-block" data-bs-toggle="modal" data-bs-target="#loginModal">
                                     Login
                                 </button>
                             </div>
-                            <div class="nav-item">
+                            <NavbarLine />
+                            @* <div class="nav-item">
                                 <span class="navbar-text fw-bold d-none d-sm-inline-block">/</span>
-                            </div>
+                            </div> *@
                         }
-                        <div class="nav-item">
-                            <NavLink class="nav-link fw-bold d-block d-sm-inline-block" href="register" Match="NavLinkMatch.All">Register</NavLink>
+                        <div class="nav-item ">
+                            <NavLink class="nav-link active fw-bold d-block d-sm-inline-block" href="register" Match="NavLinkMatch.All">Register</NavLink>
                         </div>
                     </NotAuthorized>
                 </AuthorizeView>
@@ -192,3 +194,12 @@
         return role == "admin";
     }
 }
+
+        <style>
+    .navbar-image {
+        background-image: url('/images/22.png'); 
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat; 
+    }
+        </style>

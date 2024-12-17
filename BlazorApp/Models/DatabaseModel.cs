@@ -33,7 +33,22 @@ namespace BlazorApp.Models
             return ((isNumeric || input is bool) ? $"{input}" : (input is null ? "NULL" : $"'{input}'"));
         }
 
-        public async Task Commit()
+        public T Copy()
+        {
+            var item = (T)Activator.CreateInstance(typeof(T));
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            
+            foreach (var property in properties)
+            {
+                var attributes = property.GetCustomAttributes(false);
+                
+                property.SetValue(item, property.GetValue(this));
+            }
+
+            return item;
+        }
+
+        public async Task<T> Commit()
         {
             string tableName = GetTableName();
             string keys = "";
@@ -81,25 +96,35 @@ namespace BlazorApp.Models
                 }
             }
 
-            string query = $"DO $$"
+            string query = $"SET datestyle = DMY;"
+                + $"DO $$"
+                + $" DECLARE r RECORD;"
                 + $" BEGIN"
                 + $" UPDATE {tableName} SET {update}"
-                + $" WHERE {primaryKey} = {primaryValue};"
+                + $" WHERE {primaryKey} = {primaryValue}"
+                + $" RETURNING {primaryKey} INTO r;"
                 + $" IF FOUND"
-                + $" THEN RAISE NOTICE 'Row updated';"
+                + $" THEN RAISE NOTICE '%', r.{primaryKey};"
                 + $" ELSE"
                 + $" INSERT INTO {tableName}({insert})"
-                + $" VALUES({values});"
-                + $" RAISE NOTICE 'Row inserted';"
+                + $" VALUES({values})"
+                + $" RETURNING {primaryKey} INTO r;"
+                + $" RAISE NOTICE '%', r.{primaryKey};"
                 + $" END IF;"
                 + $" END $$;";
 
             using (var connection = DBService.Instance.GetConnection())
-            using (var command = new NpgsqlCommand(query, connection))
-            using (var reader = await command.ExecuteReaderAsync())
             {
+                connection.Notice += (sender, e) => primaryValue = e.Notice.MessageText;
 
+                using (var command = new NpgsqlCommand(query, connection))
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+
+                }
             }
+            ModelList<T> userList = await QueryBy((primaryKey, primaryValue));
+            return userList.FirstOrDefault();
         }
 
         public static async Task<ModelList<T>> QueryAll()

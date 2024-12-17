@@ -1,0 +1,13 @@
+﻿<h3>PlaceholderComponent</h3>
+
+
+
+@code {
+	public bool isLoading true;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Task.Delay(800);
+		isLoading = false;
+	}
+}

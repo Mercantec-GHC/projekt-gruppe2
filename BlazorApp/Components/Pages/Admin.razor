@@ -1,38 +1,216 @@
 ﻿@page "/account/administration"
 @using BlazorApp.Models;
 @attribute [Authorize(Roles = "admin")]
+@inject IWebHostEnvironment env
 
-@* <button type="button" class="btn btn-primary" @onclick=TestButton>
-    Test Button!
-</button> *@
+<div class="card card-opacity">
+    <div class="card-body">
+        <div class="card shadow">
+            <h1 class="card-header">Administrator Panel</h1>
 
-@foreach(User user in users)
-{
-    <h1>@user.Id: @user.Username - @user.CreatedAt.ToShortDateString()</h1>
-}
+            @* <div class="card-body">
+                <h3 class="m-0">User management.</h3>
+            </div>
+            <hr class="border m-0" /> *@
+
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">User management:</h4>
+
+                <div class="card card-table overflow-hidden">
+                    <table class="table table-hover table-bordered-inner m-0 fs-5 user-select-none">
+                        <thead>
+                            <tr class="fst-italic">
+                                <th scope="col">Id:</th>
+                                <th scope="col">Username:</th>
+                                <th scope="col">Full Name:</th>
+                                @* <th class="text-nowrap" scope="col">Date Registered:</th> *@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (User user in users)
+                            {
+                                <tr  @onclick="() => OpenAdminModal(user.Id)" style="cursor: pointer;">
+                                    <th scope="row">@user.Id</th>
+                                    <td>@user.Username</td>
+                                    <td class="w-100">@user.FirstName @user.LastName</td>
+                                    @* <td>@user.CreatedAt.ToShortDateString()</td> *@
+                                    @* <td class="text-end">
+                                        <button class="btn btn-primary" @onclick="() => OpenAdminModal(user.Id)">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                    </td> *@
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @* <div class="card-footer text-muted">
+                </div> *@
+        </div>
+    </div>
+</div>
+
+<Modal @ref="modalAdmin" Id="adminModal">
+    <Header>
+        <h5 class="modal-title fw-bold">Edit User</h5>
+    </Header>
+    <Body>
+        <div class="row row-cols-1 row-cols-2 mb-3">
+            <div class="col-auto mb-3 mb-sm-0">
+                <img src="@GetUserAvatar(selectedUser.Id)" height="128" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+            </div>
+            <div class="col-auto fw-bold fst-italic align-self-center">
+                <div>@selectedUser.FirstName @selectedUser.LastName</div>
+                <div>@selectedUser.Email</div>
+                <div>@selectedUser.Username</div>
+                <div>@selectedUser.CreatedAt.ToShortDateString()</div>
+            </div>
+        </div>
+        <h5 class="fw-bold mb-3">Change User info:</h5>
+        <div class="row row-cols-1 row-cols-sm-2 mb-3 g-3">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control @fNameClass" id="floatingFirstName" placeholder="First Name" @bind-value="selectedUserCopy.FirstName" @oninput="(evt) => UpdateValidity(evt, selectedUser.FirstName, out fNameClass)">
+                    <label for="floatingFirstName">First Name</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control @lNameClass" id="floatingLastName" placeholder="First Name" @bind-value="selectedUserCopy.LastName" @oninput="(evt) => UpdateValidity(evt, selectedUser.LastName, out lNameClass)">
+                    <label for="floatingLastName">First Name</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-floating">
+            <input type="text" class="form-control @usernameClass" id="floatingUsername" placeholder="Username" @bind-value="selectedUserCopy.Username" @oninput="UpdateUsernameValidity" style="text-transform:lowercase;">
+            <label for="floatingUsername">Username</label>
+        </div>
+        @if (selectedUser.Role != "admin")
+        {
+            <h5 class="fw-bold my-3">Change Password:</h5>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control @passwordClass" id="floatingPassword1" placeholder="Password" @bind-value="password1" @oninput="(evt) => UpdatePasswordValidity(evt, out password1)">
+                <label for="floatingPassword1">Password</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control @passwordClass" id="floatingPassword2" placeholder="Password" @bind-value="password2" @oninput="(evt) => UpdatePasswordValidity(evt, out password2)">
+                <label for="floatingPassword2">Confirm Password</label>
+            </div>
+        }
+    </Body>
+    <Footer>
+        <button type="button" class="btn btn-primary" @onclick="OnSaveClicked" disabled="@saveDisabled">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </Footer>
+</Modal>
 
 @code {
-    private ModelList<User> users = new ModelList<User>();
-
-    private async Task TestButton()
-    {
-        // User user = new User()
-        // {
-        //     Id = 33,
-        //     FirstName = "Nikolaj",
-        //     LastName = "Have",
-        //     Email = "nhave06@gmail.com",
-        //     Username = "nhave",
-        //     Password = BCrypt.Net.BCrypt.EnhancedHashPassword("Qwerty123", 13),
-        //     Role = "admin",
-        //     CreatedAt = DateTime.UtcNow
-        // };
-        // await user.Commit();
-        // users = await User.QueryAll();
-    }
+    private List<User> users = new List<User>();
+    private Modal modalAdmin;
+    private User selectedUser = new User();
+    private User selectedUserCopy = new User();
+    private String password1 = "";
+    private String password2 = "";
+    private String fNameClass = "";
+    private String lNameClass = "";
+    private String usernameClass = "";
+    private String passwordClass = "";
+    private bool saveDisabled = true;
 
     protected override async Task OnInitializedAsync()
     {
         users = await User.QueryAll();
+        users = users.OrderBy(u => u.Id).ToList();
+    }
+
+    private async Task OpenAdminModal(int id)
+    {
+        selectedUser = users.FirstOrDefault(u => u.Id == id) ?? new User();
+        selectedUserCopy = selectedUser.Copy();
+
+        ResetAll();
+
+        if (modalAdmin != null)
+        {
+            await modalAdmin.Open();
+        }
+    }
+
+    private void ResetAll()
+    {
+        password1 = "";
+        password2 = "";
+        fNameClass = "";
+        lNameClass = "";
+        usernameClass = "";
+        passwordClass = "";
+        saveDisabled = true;
+    }
+
+    private void UpdateValidity(ChangeEventArgs args, string compare, out string elementClass)
+    {
+        string val = (string)(args.Value ?? "");
+        elementClass = (val.Length > 0 ? (val == compare ? "" : "is-valid") : "is-invalid");
+        UpdateSaveButton();
+    }
+
+    private void UpdatePasswordValidity(ChangeEventArgs args, out string val)
+    {
+        val = (string)(args.Value ?? "");
+        passwordClass = (password1.Length > 0 ? (password1 == password2 ? "is-valid" : "is-invalid") : "");
+        UpdateSaveButton();
+    }
+
+    private void UpdateUsernameValidity(ChangeEventArgs args)
+    {
+        string val = ((string)(args.Value ?? "")).ToLower();
+        bool isInUse = users.FirstOrDefault(u => u.Username.ToLower() == val) != null;
+        bool isCurrent = val == selectedUser.Username.ToLower();
+        usernameClass = (!isCurrent ? (val.Length == 0 || isInUse ? "is-invalid" : "is-valid") : "");
+        UpdateSaveButton();
+    }
+
+    private void UpdateSaveButton()
+    {
+        bool hasChanged = IsValid(fNameClass) || IsValid(lNameClass) || IsValid(usernameClass) || IsValid(passwordClass);
+        bool isInvalid = IsInvalid(fNameClass) || IsInvalid(lNameClass) || IsInvalid(usernameClass) || IsInvalid(passwordClass);
+        saveDisabled = !hasChanged || isInvalid;
+    }
+
+    private bool IsValid(string value)
+    {
+        return value == "is-valid";
+    }
+
+    private bool IsInvalid(string value)
+    {
+        return value == "is-invalid";
+    }
+
+    private async Task OnSaveClicked()
+    {
+        if (password1.Length > 0 && password1 == password2)
+        {
+            selectedUserCopy.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password1, 13);
+        }
+        selectedUserCopy.Username = selectedUserCopy.Username.ToLower();
+        await selectedUserCopy.Commit();
+        selectedUser = selectedUserCopy;
+        ResetAll();
+        await OnInitializedAsync();
+    }
+
+    private string GetUserAvatar(int userId)
+    {
+        var rootPath = Path.Combine(env.ContentRootPath, "files");
+        var filePath = $"avatars/{userId}.png";
+        var fullPath = Path.Combine(rootPath, filePath);
+
+        if (System.IO.File.Exists(fullPath))
+        {
+            return $"files/{filePath}";
+        }
+        else return "images/no_avatar.png";
     }
 }

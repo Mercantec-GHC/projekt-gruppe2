@@ -9,13 +9,38 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\PlaceholderComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Components\BookComponent.razor.backup" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Npgsql" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="files\avatars\" />
     <Folder Include="wwwroot\images\avatars\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\PlaceholderComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\PlaceholderComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\BookComponent.razor.backup" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\PlaceholderComponent.razor" />
   </ItemGroup>
 
 </Project>
