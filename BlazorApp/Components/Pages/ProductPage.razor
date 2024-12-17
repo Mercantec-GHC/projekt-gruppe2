@@ -1,6 +1,7 @@
 ﻿@page "/books/{Id:int}"
 @using BlazorApp.Models
 @inject NavigationManager Navigation
+@inject IWebHostEnvironment env
 
 
 
@@ -19,7 +20,7 @@
 										@(_categoryLookup[Book.CategoryId])
 									}
 								</span>
-								<img src="@($"/images/books/{Book.Id}.jpg")"
+								<img src="@GetBookImage()"
 									 class="card-img-top rounded shadow"
 									 role="img"
 									 alt="@Book.Title"
@@ -34,7 +35,7 @@
 
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										<div class="modal-body text-center">
-											<img src="@($"/images/books/{Book.Id}.jpg")" class="img-fluid rounded" alt="@Book.Title">
+											<img src="@GetBookImage()" class="img-fluid rounded" alt="@Book.Title">
 										</div>
 									</div>
 								</div>
@@ -42,21 +43,21 @@
 
 							<div class="list-group mt-3 text-center px-3">
 								<div class="price-display py-2 mb-3">
-									<span class="badge fs-4 px-2 py-2 shadow-lg">
+									<span class="badge fs-4 px-2 py-2">
 										@Book.Price.ToString("#,###.00") dkk
 									</span>
 								</div>
 
 								<div class="cart-display py-2 mb-3">
-									<a href="/Cart" class="btn align-items-center justify-content-center text-white fs-4 px-2 py-2 shadow-lg">
+									<a href="/Cart" class="btn align-items-center justify-content-center text-white fs-4 px-2 py-2">
 										<i class="bi bi-cart-plus-fill me-2"></i>
 										<strong>Add to Cart</strong>
 									</a>
 								</div>
 							</div>
 						</div>
-						</div>
 					</div>
+				</div>
 					
 
 				<div class="col-12 col-md-8">
@@ -120,6 +121,11 @@
 								</small>
 							</p>
 						</div>
+						<div class="card-footer">
+							<p class="card-text">
+								<h5 class="m-0">Seller: <a  href="@($"u/{seller.Username}")">@seller.FirstName @seller.LastName</a></h5>
+							</p>
+						</div>
 					</div>
 					<div class="col-md-12">
 						<div class="card mb-3 ">
@@ -145,6 +151,7 @@
 	[Parameter]
 	public HashSet<int> Genres { get; set; }
 	private bool isModalOpen = false;
+	private User seller = new User();
 
 	private void CloseModal()
 	{
@@ -165,34 +172,21 @@
 		_categories = await Category.QueryAll();
 		_categoryLookup = _categories.ToDictionary(c => c.Id, c => c.Name);
 		Book = _books.FirstOrDefault(b => b.Id == Id);
+
+		ModelList<User> users = await User.QueryBy(("id", Book.SellerId));
+		seller = users.FirstOrDefault() ?? new User();
+	}
+
+	private string GetBookImage()
+	{
+		var rootPath = Path.Combine(env.ContentRootPath, "files");
+		var filePath = $"books/{Book.Id}.jpg";
+		var fullPath = Path.Combine(rootPath, filePath);
+
+		if (System.IO.File.Exists(fullPath))
+		{
+			return $"files/{filePath}";
+		}
+		else return "images/4.png";
 	}
 }
-
-	<style>
-	.price-display {
-		background: #158196;
-		color: #f8f9fa; 
-		border-radius: 15px; 
-		font-family: 'Orbitron', sans-serif; 
-	}
-
-	.cart-display {
-		background: #158196;
-		border-radius: 15px;
-		font-family: 'Orbitron', sans-serif;
-	}
-
-		.cart-display:hover {
-			transform: scale(1.05);
-			background: #6f4479;
-		}
-
-	.btn-success {
-		transition: background-color 0.3s, transform 0.2s;
-	}
-
-		.btn-success:hover {
-			background-color: #218838;
-			transform: translateY(-2px);
-		}
-	</style>

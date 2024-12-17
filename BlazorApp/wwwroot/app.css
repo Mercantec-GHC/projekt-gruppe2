@@ -172,3 +172,34 @@ h1:focus {
     bottom: 70px;
     right: 10px;
 }
+
+.card-hover:hover {
+    transform: scale(1.05);
+}
+
+.price-display {
+    background: #158196;
+    color: #f8f9fa;
+    border-radius: 15px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.cart-display {
+    background: #158196;
+    border-radius: 15px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.cart-display:hover {
+    transform: scale(1.05);
+    background: #6f4479;
+}
+
+.btn-success {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
