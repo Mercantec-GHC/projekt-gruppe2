@@ -1,6 +1,9 @@
 ﻿@page "/u/{Username}"
 @using BlazorApp.Models;
+@using System.Security.Claims;
+
 @inject IWebHostEnvironment env
+@inject AuthenticationStateProvider AuthProvider
 
 @if (User == null)
 {
@@ -17,21 +20,21 @@ else if (User.Username != null)
 				<div class="card-body">
 					<div class="row justify-content-center">
 						<div class="col-sm-auto d-flex justify-content-center mb-3 mb-sm-0">
-							<img src="@GetUserAvatar(User.Id)" height="128" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+							<img src="@imageUrl" height="128" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
 						</div>
 						<div class="col-auto col-sm align-self-center text-nowrap">
 							<h3 class="fst-italic mt-sm-0 mb-0">Account created:</h3>
 							<h3 class="fst-italic mb-sm-0">@User.CreatedAt.ToShortDateString()</h3>
 						</div>
 						<div class="col-auto text-center text-sm-end">
-							<AuthorizeView>
-								<Authorized>
-									<a href="books/create-book" class="btn btn-secondary text-nowrap">Add Book for sale.</a>
-								</Authorized>
-								<NotAuthorized>
-									<button type="button" class="btn btn-secondary text-nowrap" disabled>Contact Seller.</button>
-								</NotAuthorized>
-							</AuthorizeView>
+							@if (isOwnPage)
+							{
+								<a href="books/create-book" class="btn btn-primary text-nowrap">Add Book for sale.</a>
+							}
+							else
+							{
+								<button type="button" class="btn btn-primary text-nowrap" disabled>Contact Seller.</button>
+							}
 						</div>
 					</div>
 				</div>
@@ -97,14 +100,32 @@ else if (User.Username != null)
 	[Parameter]
 	public string Username { get; set; }
 
+	private string imageUrl = "";
+	private bool isOwnPage = false;
+
 	private User User = new User();
 	private ModelList<Book> Books = new ModelList<Book>();
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnParametersSetAsync()
 	{
 		ModelList<User> users = await User.QueryBy(("username", Username));
 		User = users.FirstOrDefault();
 		Books = await User.GetBooks();
+
+		imageUrl = @GetUserAvatar(User.Id);
+
+		var authstate = await AuthProvider.GetAuthenticationStateAsync();
+		var user = authstate.User;
+
+		var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
+		if (userId != null)
+		{
+			int id;
+			if (int.TryParse(userId.Value, out id))
+			{
+				isOwnPage = User.Id == id;
+			}
+		}
 	}
 
 	private string GetUserAvatar(int userId)

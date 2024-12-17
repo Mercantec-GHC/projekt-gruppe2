@@ -68,7 +68,7 @@
     filter: var(--bs-btn-close-white-filter);
 }
 
-.btn-primary {
+[data-bs-theme=oled] .btn-primary {
     --bs-btn-bg: #0242a2;
     --bs-btn-border-color: #0242a2;
     --bs-btn-disabled-bg: #0242a2;
@@ -102,4 +102,9 @@
 
 .card-opacity {
     --bs-card-bg: rgba(var(--bs-dark-rgb), 0.5);
+}
+@media (max-width: 575px) {
+    .card-opacity > .card-body {
+        padding: 0;
+    }
 }
