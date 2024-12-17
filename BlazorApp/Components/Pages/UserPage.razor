@@ -1,5 +1,6 @@
 ﻿@page "/u/{Username}"
 @using BlazorApp.Models;
+@inject IWebHostEnvironment env
 
 @if (User == null)
 {
@@ -7,72 +8,87 @@
 }
 else if (User.Username != null)
 {
-	<div class="card shadow">
-		<h1 class="card-header">@User.FirstName @User.LastName</h1>
-		<div class="card-body">
-			@User.CreatedAt.ToShortDateString()
-		</div>
-		<h3 class="card-header border-top">Books for sale.</h3>
-		<div class="card-body">
-			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-				@foreach (Book book in Books)
-				{
-					@* <BookComponent book="book"></BookComponent> *@
-					<div class="col">
-						<div class="card overflow-hidden h-100">
-							<div class="h-100">
-								<div class="row g-0">
-									<div class="col-4 col-sm-12 product-border">
-										<div class="ratio ratio-1x1 img-container">
-											<img src="images/3.jpg" class="" alt="...">
-										</div>
-									</div>
-									<div class="col">
-										<div class="h-100 d-flex flex-column">
-											<div class="card-body border-bottom">
-												<div class="fw-bold mb-2">@book.Title</div>
-												<small class="card-subtitle"><i>by @book.Author</i></small>
-											</div>
-											@* <div class="card-body border-bottom">
-												<div class="mb-2">@book.Description</div>
-											</div> *@
+	<PageTitle>@User.FirstName @User.LastName</PageTitle>
 
-											<div class="card-body">
-												<div class="row row-cols-1 row-cols-sm-2 gy-1">
-													<div class="col">
-														<div class="d-flex justify-content-end justify-content-sm-start">
-															<span style="color: @(book.IsInStock ? "green" : "grey")">
-																@(book.IsInStock ? "in stock" : "out of stock")
-															</span>
-														</div>
-													</div>
-													<div class="col">
-														<div class="d-flex justify-content-end">
-															<div class="active text-alert fw-semibold">@book.Price.ToString("#,###.00") dkk</div>
-														</div>
-													</div>
-													<div class="col">
-													</div>
-													<div class="col">
-														<div class="d-flex justify-content-end">
-															<a href="#" class="btn btn-sm btn-light btn-outline-dark ml-2">Add to cart</a>
-														</div>
-													</div>
+	<div class="card card-opacity">
+        <div class="card-body">
+			<div class="card shadow">
+				<h1 class="card-header">@User.FirstName @User.LastName</h1>
+				<div class="card-body">
+					<div class="row justify-content-center">
+						<div class="col-sm-auto d-flex justify-content-center mb-3 mb-sm-0">
+							<img src="@GetUserAvatar(User.Id)" height="128" class="avatar-img rounded-circle shadow-4" alt="Avatar" style="background-color: white;">
+						</div>
+						<div class="col-auto col-sm align-self-center text-nowrap">
+							<h3 class="fst-italic mt-sm-0 mb-0">Account created:</h3>
+							<h3 class="fst-italic mb-sm-0">@User.CreatedAt.ToShortDateString()</h3>
+						</div>
+						<div class="col-auto text-center text-sm-end">
+							<AuthorizeView>
+								<Authorized>
+									<a href="books/create-book" class="btn btn-secondary text-nowrap">Add Book for sale.</a>
+								</Authorized>
+								<NotAuthorized>
+									<button type="button" class="btn btn-secondary text-nowrap" disabled>Contact Seller.</button>
+								</NotAuthorized>
+							</AuthorizeView>
+						</div>
+					</div>
+				</div>
+				<h3 class="card-header border-top">Books for sale.</h3>
+				<div class="card-body">
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+						@foreach (Book book in Books)
+						{
+							<div class="col">
+								<div class="card overflow-hidden h-100">
+									<div class="h-100">
+										<div class="row g-0">
+											<div class="col-4 col-sm-12 product-border">
+												<div class="ratio ratio-1x1 img-container">
+													<img src="images/3.jpg" class="" alt="...">
 												</div>
 											</div>
+											<div class="col">
+												<div class="h-100 d-flex flex-column">
+													<div class="card-body border-bottom">
+														<div class="fw-bold mb-2">@book.Title</div>
+														<small class="card-subtitle"><i>by @book.Author</i></small>
+													</div>
 
+													<div class="card-body">
+														<div class="row row-cols-1 row-cols-sm-2 gy-1 text-nowrap">
+															<div class="col text-end text-sm-start">
+																<span style="color: @(book.IsInStock ? "green" : "grey")">
+																	@(book.IsInStock ? "in stock" : "out of stock")
+																</span>
+															</div>
+															<div class="col text-end">
+																<div class="active text-alert fw-semibold">@book.Price.ToString("#,###.00") dkk</div>
+															</div>
+															<div class="col">
+																<a href="/books/@book.Id" class="btn btn-sm btn-light btn-outline-dark d-none d-sm-inline-block stretched-link">More Info</a>
+																<a href="/books/@book.Id" class="d-block d-sm-none stretched-link"></a>
+															</div>
+															<div class="col text-end">
+																<a href="/cart" class="btn btn-sm btn-light btn-outline-dark position-relative z-1">Add to cart</a>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+						}
 
-						</div>
 					</div>
-				}
-
+				</div>
+				<div class="card-footer">
+				</div>
 			</div>
-		</div>
-		<div class="card-footer">
 		</div>
 	</div>
 }
@@ -89,5 +105,18 @@ else if (User.Username != null)
 		ModelList<User> users = await User.QueryBy(("username", Username));
 		User = users.FirstOrDefault();
 		Books = await User.GetBooks();
+	}
+
+	private string GetUserAvatar(int userId)
+	{
+		var rootPath = Path.Combine(env.ContentRootPath, "files");
+		var filePath = $"avatars/{userId}.png";
+		var fullPath = Path.Combine(rootPath, filePath);
+
+		if (System.IO.File.Exists(fullPath))
+		{
+			return $"files/{filePath}";
+		}
+		else return "images/no_avatar.png";
 	}
 }

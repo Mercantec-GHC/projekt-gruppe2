@@ -1,8 +1,139 @@
-﻿@page "/Cart"
-@attribute [Authorize]
+﻿@page "/cart"
+@using BlazorApp.Models
+@inject IJSRuntime JSRuntime
 
-<h3>Cart</h3>
+<div class="card shadow">
+	<h1 class="card-header">Cart</h1>
+	<div class="card-body">
+		@foreach (var entry in booksInCart)
+		{
+			Book book = entry.Key;
+			int quantity = entry.Value;
+
+			<p>ID: @book.Id</p>
+			<p>Quantity: @quantity</p>
+			<p>@book.Title</p>
+			<p>@book.Price</p>
+			<p>Total for this book: @(book.Price * quantity)</p>
+			<button class="btn btn-danger btn-sm" @onclick="() => {RemoveBookFromCart(book);}">X</button>
+			//to make space between books
+			<a>-----------------------------</a>
+		}
+		<h3>Total Price: @CalculateTotalPrice()</h3>
+	</div>
+</div>
+<div class=" d-flex justify-content-center">
+	<a class="btn btn-secondary" href="/checkout">checkout</a>
+</div>
+<button class="btn btn-secondary" @onclick=SetFakeCookie>SetCookie(demo)</button>
 
 @code {
+	//exampel of book 1:2, where 1 is id, 2 is amount and "," makes it ready for the next book
+	private const string CookieName = "cart";
+	private Dictionary<Book, int> booksInCart = new Dictionary<Book, int>();
 
+	private decimal CalculateTotalPrice()
+	{
+		decimal total = 0;
+
+		foreach (var entry in booksInCart)
+		{
+			Book book = entry.Key;
+			int quantity = entry.Value;
+			total += (decimal)book.Price * (decimal)quantity;
+		}
+
+		return total;
+	}
+
+	private async void RemoveBookFromCart(Book book)
+	{
+		booksInCart.Remove(book);
+		string cookie = await BuildCookieString();
+		await SetCookie(cookie);
+		StateHasChanged();
+	}
+
+	private async Task<string> BuildCookieString()
+	{
+		string cookie = "";
+
+		foreach (var entry in booksInCart)
+		{
+			if (cookie.Length > 0) cookie += ",";
+			cookie += $"{entry.Key.Id}:{entry.Value}";
+		}
+
+		return cookie;
+	}
+
+	private async Task SetCookie(string cookie)
+	{
+		var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+		string cookieValue = await cookieModule.InvokeAsync<string>("setCookie", CookieName, cookie, 400);
+	}
+
+	//cannot use "InvokeAsync" without onAfterRender and onAfterRender askes the db 2 times for the same things its not a bug
+	protected override async void OnAfterRender(bool firstRender)
+	{
+		Console.WriteLine(firstRender);
+		if (firstRender)
+		{
+			try
+			{
+				//loads the cookie
+				var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+				string cookieValue = await cookieModule.InvokeAsync<string>("getCookie", CookieName);
+				// splits cookie into an array
+				string[] cartArray = cookieValue.Split(",");
+				// creates array thats the lengh of cartArray
+				(string key, object value)[] parameters = new (string key, object value)[cartArray.Length];
+
+				for (int i = 0; i < cartArray.Length; i++)
+				{
+					string[] cart = cartArray[i].Split(":");
+					//Makes the array readebel by splitting the the id and quantity and urning it into an int
+					int booiID = int.Parse(cartArray[i].Split(":")[0]);
+					parameters[i] = ("id", booiID);
+				}
+
+				ModelList<Book> booksInCartTemp = await Book.QueryBy("OR", parameters);
+				foreach (Book book in booksInCartTemp)
+				{
+					for (int i = 0; i < cartArray.Length; i++)
+					{
+						int booiID = int.Parse(cartArray[i].Split(":")[0]);
+						int quantity = int.Parse(cartArray[i].Split(":")[1]);
+
+						if (book.Id == booiID)
+						{
+							booksInCart.Add(book, quantity);
+							break;
+						}
+					}
+				}
+				StateHasChanged();
+			}
+			catch
+			{
+
+			}
+		}
+	}
+
+
+
+	//sets the cookie
+	private async Task CartCookie(string accepted)
+	{
+		var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
+		await cookieModule.InvokeVoidAsync("setCookie", CookieName, accepted, 400);
+		StateHasChanged();
+	}
+
+
+	private async Task SetFakeCookie()
+	{
+		await CartCookie("4:2,13:1");
+	}
 }

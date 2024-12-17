@@ -6,9 +6,15 @@
 {
 	<div class="fixed-bottom py-3 bg-dark border-top text-light">
 		<div class="container">
-			<p>This website uses cookies to help you have a better browsing experience on the website.</p>
-			<button class="button" @onclick=AcceptClicked>Accept</button>
-			<button class="button" @onclick=DeclinedClicked>Decline</button>
+			<div class="row justify-content-between">
+				<div class="col-auto">
+					<p>This website uses cookies to help you have a better browsing experience on the website.</p>
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-secondary" @onclick=AcceptClicked>Accept</button>
+					<button class="btn btn-secondary" @onclick=DeclinedClicked>Decline</button>
+				</div>
+			</div>
 		</div>
 	</div>
 }

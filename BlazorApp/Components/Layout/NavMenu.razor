@@ -31,19 +31,19 @@
 
                 <NavbarLine />
 
+                <NavLink class="nav-item active nav-link" href="cart">
+                    <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
+                    @* <div style="position: relative; width: 0; height: 0">
+                    <div style="position: absolute; left: 24px; top: -32px">
+                    <span class="badge bg-danger notification-counter d-none d-sm-inline-block">7</span>
+                    </div>
+                    </div> *@
+                    <span class="d-inline-block d-sm-none fw-bold">Cart</span>
+                    @* <span class="d-inline-block d-sm-none">(7)</span> *@
+                </NavLink>
+
                 <AuthorizeView>
                     <Authorized>
-
-                        <NavLink class="nav-item active nav-link" href="cart">
-                            <i class="bi bi-cart-fill d-none d-sm-inline-block"></i>
-                            @* <div style="position: relative; width: 0; height: 0">
-                                <div style="position: absolute; left: 24px; top: -32px">
-                                    <span class="badge bg-danger notification-counter d-none d-sm-inline-block">7</span>
-                                </div>
-                            </div> *@
-                            <span class="d-inline-block d-sm-none fw-bold">Cart</span>
-                            @* <span class="d-inline-block d-sm-none">(7)</span> *@
-                        </NavLink>
 
                         <MessageMenu />
 
@@ -68,7 +68,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">User page</NavLink></li>
-                                <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li>
+                                @* <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li> *@
                                 <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Account</NavLink></li>
                                 @if (IsUserAdmin(context.User))
                                 {
