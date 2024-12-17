@@ -58,15 +58,15 @@
 
                 <AuthorizeView>
                     <Authorized>
-                        <div class="nav-item dropdown">
+                        <div class="nav-item dropdown py-2 py-sm-0">
                             <button class="nav-link dropdown-toggle navbar-img" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @* @{
                                     string avatar = $"images/avatars/{GetUserId(context.User)}.png";
                                     <img id="userAvatar" src="@avatar" class="avatar-img rounded-circle shadow-4" style="background-color: white;">
                                 } *@
-                                <Avatar id="userAvatar" height="40" />
+                                <Avatar id="userAvatar" height="40" Class="me-1"/>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end mt-3 mt-sm-0">
                                 <li><NavLink class="dropdown-item" href="@GetUserPage(context.User)" Match="NavLinkMatch.All">User page</NavLink></li>
                                 @* <li><NavLink class="dropdown-item" href="orders" Match="NavLinkMatch.All">Orders</NavLink></li> *@
                                 <li><NavLink class="dropdown-item" href="account" Match="NavLinkMatch.All">Account</NavLink></li>

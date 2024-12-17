@@ -13,10 +13,17 @@ body {
     background-repeat: no-repeat;
     background-position: top;
     background-size: cover;
-    opacity: 50;
+    /*opacity: 50;*/
     position: fixed;
     top: 0;
     z-index: -999;
+}
+
+.card-home {
+    background-image: url("images/2.png");
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
 }
 
 a, .btn-link {
@@ -148,4 +155,20 @@ h1:focus {
 
 .cropper-view-box {
     border-radius: 50% !important;
+}
+
+.sell-hover:hover {
+    transform: scale(1.05);
+    background: #6f4479;
+}
+
+.buy-hover:hover {
+    transform: scale(1.05);
+    background: #3f98ab;
+}
+
+.scroll-top-container {
+    position: fixed;
+    bottom: 70px;
+    right: 10px;
 }
