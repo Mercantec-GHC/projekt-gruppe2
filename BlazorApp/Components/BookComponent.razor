@@ -25,10 +25,10 @@
 @if (book != null)
 {
 	<div class="col">
-		<div class="card shadow my-4 d-flex">
+		<div class="card shadow my-4 d-flex card-hover">
 			<NavLink href=@($"/books/{book.Id}")>
 				<div class="ratio ratio-1x1">
-				<img src="@($"/images/3.jpg")"
+					<img src="@($"/images/books/{book.Id}.jpg")"
 						 class="img-fluid card-img-top"
 						 style="object-fit: cover;"
 						 alt="@book.Title">
@@ -78,3 +78,11 @@ else
 		StateHasChanged();
 	}
 }
+<style>
+		.card-hover:hover
+
+	{
+		transform: scale(1.05);
+	}
+	
+</style>
