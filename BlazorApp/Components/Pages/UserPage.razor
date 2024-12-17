@@ -43,50 +43,8 @@ else if (User.Username != null)
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
 						@foreach (Book book in Books)
 						{
-							<div class="col">
-								<div class="card overflow-hidden h-100">
-									<div class="h-100">
-										<div class="row g-0">
-											<div class="col-4 col-sm-12 product-border">
-												<div class="ratio ratio-1x1 img-container">
-													<img src="images/3.jpg" class="" alt="...">
-												</div>
-											</div>
-											<div class="col">
-												<div class="h-100 d-flex flex-column">
-													<div class="card-body border-bottom">
-														<div class="fw-bold mb-2">@book.Title</div>
-														<small class="card-subtitle"><i>by @book.Author</i></small>
-													</div>
-
-													<div class="card-body">
-														<div class="row row-cols-1 row-cols-sm-2 gy-1 text-nowrap">
-															<div class="col text-end text-sm-start">
-																<span style="color: @(book.IsInStock ? "green" : "grey")">
-																	@(book.IsInStock ? "in stock" : "out of stock")
-																</span>
-															</div>
-															<div class="col text-end">
-																<div class="active text-alert fw-semibold">@book.Price.ToString("#,###.00") dkk</div>
-															</div>
-															<div class="col">
-																<a href="/books/@book.Id" class="btn btn-sm btn-light btn-outline-dark d-none d-sm-inline-block stretched-link">More Info</a>
-																<a href="/books/@book.Id" class="d-block d-sm-none stretched-link"></a>
-															</div>
-															<div class="col text-end">
-																<a href="/cart" class="btn btn-sm btn-light btn-outline-dark position-relative z-1">Add to cart</a>
-															</div>
-														</div>
-													</div>
-
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+							<BookComponent book=book />
 						}
-
 					</div>
 				</div>
 				<div class="card-footer">
