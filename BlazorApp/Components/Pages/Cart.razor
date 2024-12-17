@@ -2,6 +2,9 @@
 @using BlazorApp.Models
 @inject IJSRuntime JSRuntime
 
+<div class=" d-flex justify-content-center">
+	<a class="btn btn-secondary" href="/checkout">checkout</a>
+</div>
 <div class="card shadow">
 	<h1 class="card-header">Cart</h1>
 	<div class="card-body">
@@ -12,16 +15,23 @@
 
 			<p>ID: @book.Id</p>
 			<p>Quantity: @quantity</p>
-			<p>@book.Title</p>
-			<p>@book.Price</p>
-			<p>Total for this book: @(book.Price * quantity)</p>
+			<p>Title: @book.Title</p>
+			<p>Price: @book.Price.ToString("#,###.00") dkk</p>
+			<p>Total for this book: @((book.Price * quantity).ToString("#,###.00")) dkk</p>
 			<button class="btn btn-danger btn-sm" @onclick="() => {RemoveBookFromCart(book);}">X</button>
 			//to make space between books
-			<a>-----------------------------</a>
+			<div>
+				<a>----------------------------------------------------------</a>
+			</div>
 		}
-		<h3>Total Price: @CalculateTotalPrice()</h3>
+		<h3>Total Price: @CalculateTotalPrice().ToString("#,###.00") dkk</h3>
 	</div>
 </div>
+
+<div class=" d-flex justify-content-center">
+	<a>Proceed to checkout.</a>
+	</div>
+
 <div class=" d-flex justify-content-center">
 	<a class="btn btn-secondary" href="/checkout">checkout</a>
 </div>
