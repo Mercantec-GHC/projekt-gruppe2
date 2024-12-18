@@ -56,13 +56,13 @@
 		</div>
 	</div>
 </div>
-@* to be implemented! *@
-@* <div class="container position-fixed mb-1">
-	<a class="bi-arrow-up-square-fill" @onclick="NavigateToUrl"> Back to top</a>
-</div> *@
 
 <div class="scroll-top-container">
-	<button type="button" id="scroll_top" @onclick=OnScrollClicked class="btn btn-primary text-nowrap d-none"><i class="bi-arrow-up-square-fill"></i> To top</button>
+	<button type="button" id="scroll_top"
+			@onclick=OnScrollClicked
+			class="btn btn-primary text-nowrap d-none">
+		<i class="bi-arrow-up-square-fill"></i> Back to top
+	</button>
 </div>
 
 @code {
@@ -165,7 +165,7 @@
 		if (_selectedGenres.Any())
 		{
 			filteredBooksList = filteredBooksList
-				.Where(book => book.GenreId != null && _selectedGenres.Contains(int.Parse(book.GenreId)));
+				.Where(book => book.GenreId != null && GenreMatches(book));
 		}
 
 		_filteredBooks.Clear();
@@ -175,8 +175,27 @@
 		StateHasChanged();
 	}
 
+	private bool GenreMatches(Book book)
+	{
+		bool matches = false;
+
+		string[] ids = book.GenreId.Split(",");
+		for (int i = 0; i < ids.Length; i++)
+		{
+			bool test = _selectedGenres.Contains(int.Parse(ids[i]));
+			if (test)
+			{
+				matches = true;
+				continue;
+			}
+			matches = false;
+		}
+
+		return matches;
+	}
+
 	private void NavigateToUrl()
 	{
-		Navigation.NavigateTo("https://localhost:7130/books", true);
+		Navigation.NavigateTo("/books", true);
 	}
 }
