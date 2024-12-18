@@ -18,6 +18,7 @@
 			<p>Title: @book.Title</p>
 			<p>Price: @book.Price.ToString("#,###.00") dkk</p>
 			<p>Total for this book: @((book.Price * quantity).ToString("#,###.00")) dkk</p>
+			//calls function and passes book with no imput parameters 
 			<button class="btn btn-danger btn-sm" @onclick="() => {RemoveBookFromCart(book);}">X</button>
 			//to make space between books
 			<div>
@@ -27,11 +28,9 @@
 		<h3>Total Price: @CalculateTotalPrice().ToString("#,###.00") dkk</h3>
 	</div>
 </div>
-
 <div class=" d-flex justify-content-center">
 	<a>Proceed to checkout.</a>
 	</div>
-
 <div class=" d-flex justify-content-center">
 	<a class="btn btn-secondary" href="/checkout">checkout</a>
 </div>
@@ -60,6 +59,7 @@
 	{
 		booksInCart.Remove(book);
 		string cookie = await BuildCookieString();
+		// saves the updated cookie in the browser
 		await SetCookie(cookie);
 		StateHasChanged();
 	}
@@ -70,6 +70,7 @@
 
 		foreach (var entry in booksInCart)
 		{
+			//sets the ","if there is something added to the cookie
 			if (cookie.Length > 0) cookie += ",";
 			cookie += $"{entry.Key.Id}:{entry.Value}";
 		}
@@ -94,27 +95,36 @@
 				//loads the cookie
 				var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
 				string cookieValue = await cookieModule.InvokeAsync<string>("getCookie", CookieName);
-				// splits cookie into an array
+				// splits cookie into an array with the books seperptly
 				string[] cartArray = cookieValue.Split(",");
-				// creates array thats the lengh of cartArray
+				//[1:2]
+				// creates array thats is key-value pairs where key is "id" and pair is "quantity" with the lengh of cartArray so that the lenght matches the number of books
 				(string key, object value)[] parameters = new (string key, object value)[cartArray.Length];
 
+				//loops though all the books
 				for (int i = 0; i < cartArray.Length; i++)
 				{
 					string[] cart = cartArray[i].Split(":");
-					//Makes the array readebel by splitting the the id and quantity and urning it into an int
+					//converts bookid to an in int
 					int booiID = int.Parse(cartArray[i].Split(":")[0]);
+					//adds the book id to the parameters so that you can quarry it in the database
 					parameters[i] = ("id", booiID);
-				}
+					//after paremeters it will look like this. [("id", 4), ("id", 13)]
 
+				}
+				//quarrys the database for books with matching id's to the parameters and "or" is used so you can do mulitple books
 				ModelList<Book> booksInCartTemp = await Book.QueryBy("OR", parameters);
+
+				// loops though all the books that it got from the database
 				foreach (Book book in booksInCartTemp)
 				{
 					for (int i = 0; i < cartArray.Length; i++)
 					{
+						//index 0 for bookid so that bookid will take the first and index 1 for quantity so it will take the 2 place wich look like 1:2,4:6
 						int booiID = int.Parse(cartArray[i].Split(":")[0]);
 						int quantity = int.Parse(cartArray[i].Split(":")[1]);
 
+						//checks if the bookid from the cookie matches the database book id
 						if (book.Id == booiID)
 						{
 							booksInCart.Add(book, quantity);
@@ -132,8 +142,7 @@
 	}
 
 
-
-	//sets the cookie
+	//sets the fake cookie
 	private async Task CartCookie(string accepted)
 	{
 		var cookieModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/cookie.js");
@@ -141,9 +150,9 @@
 		StateHasChanged();
 	}
 
-
+	// sets an exampel cookie for a purchess
 	private async Task SetFakeCookie()
 	{
-		await CartCookie("4:2,13:1");
+		await CartCookie("4:2,13:1,2:3");
 	}
 }
