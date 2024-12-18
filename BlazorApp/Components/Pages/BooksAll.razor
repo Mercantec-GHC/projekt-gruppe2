@@ -56,13 +56,13 @@
 		</div>
 	</div>
 </div>
-@* to be implemented! *@
-@* <div class="container position-fixed mb-1">
-	<a class="bi-arrow-up-square-fill" @onclick="NavigateToUrl"> Back to top</a>
-</div> *@
 
 <div class="scroll-top-container">
-	<button type="button" id="scroll_top" @onclick=OnScrollClicked class="btn btn-primary text-nowrap d-none"><i class="bi-arrow-up-square-fill"></i> To top</button>
+	<button type="button" id="scroll_top"
+			@onclick=OnScrollClicked
+			class="btn btn-primary text-nowrap d-none">
+		<i class="bi-arrow-up-square-fill"></i> Back to top
+	</button>
 </div>
 
 @code {
@@ -177,6 +177,6 @@
 
 	private void NavigateToUrl()
 	{
-		Navigation.NavigateTo("https://localhost:7130/books", true);
+		Navigation.NavigateTo("/books", true);
 	}
 }

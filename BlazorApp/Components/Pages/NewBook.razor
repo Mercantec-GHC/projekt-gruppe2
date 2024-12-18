@@ -7,134 +7,227 @@
 @inject IJSRuntime JSRunTime
 @attribute [Authorize]
 
+<!-- Picture -->
+<div class="row">
+	<div class="col-sm-auto d-flex justify-content-center">
+		<label class="btn m-0 p-0" for="inputNewBookImage">
+			@* <span class="btn btn-primary">Upload Image</span> *@
+			<input type="file" class="d-none" id="inputNewBookImage" name="image" accept="image/*">
+		</label>
+	</div>
+</div>
+<div class="card w-100 shadow">
 
-<div class="row justify-content-center">
-	<div class="col col-sm-10 col-md-12 col-lg-10 col-xl-6">
-		<div class="card shadow">
-			<h1 class="card-header">Add a new book for sale</h1>
-			<div class="card-body">
-				<!-- Picture -->
-				<div class="row">
-					<div class="col-sm-auto d-flex justify-content-center">
-						<label class="btn m-0 p-0 ">
-							<input type="file" class="d-none" id="input" name="image" accept="image/*">
-						</label>
+	<EditForm FormName="New book" Model="this" OnValidSubmit="AddBook">
+		<h1 class="card-header">Add a new book for sale</h1>
+		<hr class="border m-0" />
+		<div class="card-body ">
+			<div class="row row-cols-1 row-cols-sm-2 mb-3 g-3">
+				<div class="col">
+					<div class="form-floating">
+						<input type="text" class="form-control"
+							   id="floatingTitle"
+							   name="title"
+							   placeholder="Title"
+							   @bind-value="CreateBook.Title">
+						<label for="floatingTitle">Title</label>
 					</div>
-					<div class="col align-self-center">
-						<h3 class="fst-italic mt-3 mt-sm-0">Please fill in all the fields.</h3>
+				</div>
+				<div class="col">
+					<div class="form-floating">
+						<input type="text" class="form-control"
+							   id="floatingAuthor"
+							   name="author"
+							   placeholder="Author"
+							   @bind-value="CreateBook.Author">
+						<label for="floatingAuthor">Author</label>
 					</div>
 				</div>
 			</div>
-			<hr class="border m-0" />
-			<EditForm FormName="New book" Model="this" OnSubmit="AddBook">
-				<div class="card-body">
-					<div class="row row-cols-1 row-cols-sm-2 mb-3 g-3">
-						<div class="col">
-							<div class="form-floating">
-								<input type="text" class="form-control"
-									   id="floatingTitle"
-									   name="title"
-									   placeholder="Title"
-									   @bind-value="CreateBook.Title">
-								<label for="floatingEmail">Title</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating">
-								<input type="text" class="form-control"
-									   id="floatingAuthor"
-									   name="author"
-									   placeholder="Author"
-									   @bind-value="CreateBook.Author">
-								<label for="floatingEmail">Author</label>
-							</div>
-						</div>
-					</div>
-					<div class="row row-cols-2 row-cols-sm-3 mb-3 g-3">
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="text" class="form-control"
-									   id="floatingCategory"
-									   name="category"
-									   placeholder="Category"
-									   @bind-value="CreateBook.CategoryId">
-								<label for="floatingCategory">Category</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="text" class="form-control"
-									   id="floatingGenre"
-									   name="genre"
-									   placeholder="Genre"
-									   @bind-value="CreateBook.GenreId">
-								<label for="floatingGenre">Genre</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="text" class="form-control"
-									   id="floatingYear"
-									   name="year"
-									   placeholder="Year"
-									   @bind-value="CreateBook.YearOfPrint">
-								<label for="floatingYear">Year</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="text" class="form-control"
-									   id="floatingLength"
-									   name="length"
-									   placeholder="Length"
-									   @bind-value="CreateBook.Length">
-								<label for="floatingYear">Length</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="text" class="form-control"
-									   id="floatingPrice"
-									   name="price"
-									   placeholder="Price"
-									   @bind-value="CreateBook.Price">
-								<label for="floatingPrice">Price</label>
-							</div>
-						</div>
-						<div class="col">
-							<div class="form-floating mb-2">
-								<input type="number" class="form-control"
-									   id="floatingStock"
-									   name="stock"
-									   placeholder="Amount"
-									   @bind-value="CreateBook.Stock">
-								<label for="floatingStock">Amount</label>
-							</div>
-						</div>
+			<div class="row row-cols-3 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mb-3 g-4">
+				<div class="col">
+					<div class="form-floating mb-2">
+						<input type="double" class="form-control"
+							   id="floatingPrice"
+							   name="price"
+							   placeholder="Price"
+							   @bind-value="CreateBook.Price">
+						<label for="floatingPrice">Price</label>
 					</div>
 				</div>
-
-				<div class="card-footer text-muted py-3">
-					<div class="d-flex justify-content-center justify-content-sm-end">
-						<button type="submit" id="saveButton" class="btn btn-secondary" >Save Changes</button>
+				<div class="col">
+					<div class="form-floating mb-2">
+						<input type="number" class="form-control"
+							   id="floatingLength"
+							   name="length"
+							   placeholder="Length"
+							   @bind-value="CreateBook.Length">
+						<label for="floatingYear">Length min (for audio); Pages (for text)</label>
 					</div>
 				</div>
-			</EditForm>
+				<div class="col">
+					<div class="form-floating mb-2">
+						<input type="number" class="form-control"
+							   id="floatingYear"
+							   name="year"
+							   placeholder="Year"
+							   @bind-value="CreateBook.YearOfPrint">
+						<label for="floatingYear">Year of publishing</label>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-floating mb-2">
+						<input type="number" class="form-control"
+							   id="floatingStock"
+							   name="stock"
+							   placeholder="Amount"
+							   @bind-value="CreateBook.Stock">
+						<label for="floatingStock">Amount</label>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-floating mb-2">
+						<select class="form-select form-select-lg mb-3"
+								placeholder="Select condition"
+								aria-label="Select condition"
+								@onchange=ChooseCondition>
+							<option value="" disabled selected> </option>
+							<option value="true">New</option>
+							<option value="false">Used</option>
+						</select>
+						<label for="floatingCondition">Condition</label>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-floating mb-2">
+						<select class="form-select form-select-lg mb-3"
+								placeholder="Select category"
+								aria-label="Select category"
+								@onchange=ChooseCategory>
+							<option value="" disabled selected> </option>
+							<option value="1">Paperbacks</option>
+							<option value="2">E-books</option>
+							<option value="3">Audiobooks</option>
+						</select>
+						<label for="floatingGenre">Select category</label>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
+		<div class="card shadow-sm mb-3" style="margin-top: 20px">
+			<div class="card-header text-center">
+				Select Genres
+			</div>
+			<div class="card-body">
+				<div class="row gy-3">
+					@if (Genres != null && Genres.Any())
+					{
+						@foreach (var genre in Genres)
+						{
+							string id = $"checkGenre{genre.Id}";
+							<div class="col-12 col-sm-6">
+								<div class="form-check">
+									<input class="form-check-input"
+										   type="checkbox"
+										   id="@id"
+										   value="@genre.Id"
+										   checked="@SelectedGenres.Contains(genre.Id)"
+										   @onchange="(args) => UpdateSelectedGenres(args, genre.Id)">
+									<label class="form-check-label" for="@id">
+										@genre.Name
+									</label>
+								</div>
+							</div>
+						}
+					}
+					else
+					{
+						<p>No genres available.</p>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="card shadow-sm mb-3" style="margin-top: 20px">
+			<div class="card-header text-center">
+				Add description
+			</div>
+			<div class="card-body">
+				<div class="row gy-3">
+					<textarea type="text" class="form-control"
+							  id="floatingDescription"
+							  style="min-height: 256px;"
+							  name="description"
+							  @oninput="AddDescription">
+						   </textarea>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer text-muted py-3">
+			<div class="d-flex justify-content-center justify-content-sm-end">
+				<button type="submit" id="saveButton" class="btn btn-secondary">Save Changes</button>
+			</div>
+		</div>
+	</EditForm>
 </div>
 
 
-
 @code {
-	
+	[Parameter]
+	public List<Genre> Genres { get; set; } = new List<Genre>();
+	[Parameter]
+	public HashSet<int> SelectedGenres { get; set; } = new HashSet<int>();
+	[Inject]
+	public NavigationManager Navigation { get; set; }
+
 	private bool isExistingUser = false;
 	private Book CreateBook = new Book();
-	
-	private async void AddBook()
+
+	protected override async Task OnInitializedAsync()
 	{
-		await CreateBook.Commit();
+		Genres = await Genre.QueryAll();
+	}
 
+	private async Task AddBook()
+	{
+		if (CreateBook != null)
+		{
+			CreateBook = await CreateBook.Commit();
 
+			Navigation.NavigateTo($"books/{CreateBook.Id}");
+		}
+
+	}
+
+	private void ChooseCategory(ChangeEventArgs args)
+	{
+		CreateBook.CategoryId = int.Parse((string)args.Value);
+	}
+	private void ChooseCondition(ChangeEventArgs args)
+	{
+		CreateBook.IsNewCondition = bool.Parse((string)args.Value);
+	}
+	private void AddDescription(ChangeEventArgs args)
+	{
+		CreateBook.Description = (string)args.Value;
+	}
+
+	private void UpdateSelectedGenres(ChangeEventArgs args, int genreId)
+	{
+		if ((bool)args.Value)
+		{
+			SelectedGenres.Add(genreId);
+		}
+		else
+		{
+			SelectedGenres.Remove(genreId);
+		}
+		string genreIds = string.Empty;
+		foreach (var genre in SelectedGenres)
+		{
+			if (genreIds.Length > 0) genreIds += ",";
+
+			genreIds += genre;
+		}
+		CreateBook.GenreId = genreIds;
 	}
 }
