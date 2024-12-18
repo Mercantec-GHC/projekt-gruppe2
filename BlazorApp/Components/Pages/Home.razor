@@ -7,26 +7,6 @@
 
 <div class="content text-center px-3 px-md-5 ">
 
-	@* <div class="card text-center border-10 mb-3">
-		<img class="card-img w-100" src="@($"/images/2.png")" alt="Hero Image" style="object-fit: cover;" />
-		<div class="card-img-overlay d-flex flex-column justify-content-center align-items-center text-white bg-dark bg-opacity-50 p-3 p-md-5">
-			<div class="mb-4">
-				<span class="card-title fw-bold expand-sm" style="font-size: 8vw;">Book</span>
-				<span class="card-title fw-bold expand-sm" style="font-size: 8vw;">Verse</span>
-			</div>
-			<p class="card-text mt-2"><small> Welcome to the book marketplace. </small></p>
-
-				<hr class="w-50 my-4 border-2 border-white">
-
-				<h1 class="fs-4 fs-md-3 mt-3">Uncover Worlds. Discover Deals.</h1>
-
-			<div class="d-flex flex-column flex-md-row justify-content-center align-items-center mt-3">
-				<button @onclick="NavigateToBooks" type="button" class="btn btn-light me-0 me-md-4 mb-3 mb-md-0">I want to buy</button>
-				<button @onclick="NavigateToNewBook" type="button" class="btn btn-light">I want to sell</button>
-			</div>
-		</div>
-	</div> *@
-
 	<div class="card overflow-hidden">
 		<div class="card-home">
 			<div class="justify-content-center p-5 text-white bg-dark bg-opacity-50">
@@ -58,10 +38,10 @@
 
 	private void NavigateToBooks()
 	{
-		Navigation.NavigateTo("https://localhost:7130/books", true);
+		Navigation.NavigateTo("/books", true);
 	}
 	private void NavigateToNewBook()
 	{
-		Navigation.NavigateTo("https://localhost:7130/books/create-book", true);
+		Navigation.NavigateTo("/books/create-book", true);
 	}
 }
