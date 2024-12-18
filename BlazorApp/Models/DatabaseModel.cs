@@ -10,19 +10,30 @@ namespace BlazorApp.Models
 {
     public abstract class DatabaseModel<T>
     {
+        /// <summary>
+        /// A function to get the Table name.
+        /// </summary>
+        /// <returns>Name of the table.</returns>
         private static string GetTableName()
         {
             string tableName = typeof(T).Name.ToLower();
             var classAttributes = typeof(T).GetCustomAttributes(false);
             var tableAttribute = classAttributes.OfType<Table>().FirstOrDefault();
-            if (tableAttribute != null)
+			// Kontrollere om modelens klass har en attribute af Table og aflevere dens navn.
+            // Ellers afleveres klassens navn som lowercase.
+			if (tableAttribute != null)
             {
                 tableName = ((Table)tableAttribute).TableName;
             }
             return tableName;
         }
 
-        private static string FormatSql(object input)
+		/// <summary>
+		/// Format a string for use in SQL queries.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns>Formated string to be used in SQL queries.</returns>
+		private static string FormatSql(object input)
         {
             bool isNumeric = input is int ||
                             input is double ||
@@ -30,9 +41,14 @@ namespace BlazorApp.Models
                             input is long ||
                             input is decimal;
 
+            // Hvis inputet er string, sættes ' rundt om det, og hvis det er null, afleveres NULL som string.
             return ((isNumeric || input is bool) ? $"{input}" : (input is null ? "NULL" : $"'{input}'"));
         }
 
+        /// <summary>
+        /// Create a copy the item.
+        /// </summary>
+        /// <returns></returns>
         public T Copy()
         {
             var item = (T)Activator.CreateInstance(typeof(T));
@@ -48,7 +64,12 @@ namespace BlazorApp.Models
             return item;
         }
 
-        public async Task<T> Commit()
+		/// <summary>
+		/// Saves the changes made to this item.
+		/// If the "PRIMARY KEY" does not exist in the table, it inserts it into the table.
+		/// </summary>
+		/// <returns>A new instance of the item with the updated info.</returns>
+		public async Task<T> Commit()
         {
             string tableName = GetTableName();
             string keys = "";
@@ -96,7 +117,10 @@ namespace BlazorApp.Models
                 }
             }
 
-            string query = $"SET datestyle = DMY;"
+			// Bygger en funtion i SQL, til at håndtere INSERT INTO,
+			// hvis UPDATE ikke lykkedes.
+            // Til sidst aflevere værdien af dens PRIMARY KEY, da SELECT ikke kan bruges her.
+			string query = $"SET datestyle = DMY;"
                 + $"DO $$"
                 + $" DECLARE r RECORD;"
                 + $" BEGIN"
@@ -115,7 +139,8 @@ namespace BlazorApp.Models
 
             using (var connection = DBService.Instance.GetConnection())
             {
-                connection.Notice += (sender, e) => primaryValue = e.Notice.MessageText;
+				// Sætter primaryValue til det Notice som SQL aflevere
+				connection.Notice += (sender, e) => primaryValue = e.Notice.MessageText;
 
                 using (var command = new NpgsqlCommand(query, connection))
                 using (var reader = await command.ExecuteReaderAsync())
@@ -123,21 +148,37 @@ namespace BlazorApp.Models
 
                 }
             }
+            // Til sidst laves et SQL opslag og aflevere den første værdi som matcher, ellers default.
             ModelList<T> userList = await QueryBy((primaryKey, primaryValue));
             return userList.FirstOrDefault();
         }
 
-        public static async Task<ModelList<T>> QueryAll()
+		/// <summary>
+		/// Queries a list of all items in the Table.
+		/// </summary>
+		/// <returns>A ModelList of all items in the Table.</returns>
+		public static async Task<ModelList<T>> QueryAll()
         {
             return await QueryBy();
         }
 
-        public static async Task<ModelList<T>> QueryBy(params (string Key, object Value)[] parameters)
+		/// <summary>
+		/// Queries a list of all items in the Table where all parameters matches.
+		/// </summary>
+		/// <param name="parameters">A key and a value to search for.</param>
+		/// <returns>A ModelList of items in the Table, matching the parameters.</returns>
+		public static async Task<ModelList<T>> QueryBy(params (string Key, object Value)[] parameters)
         {
             return await QueryBy("AND", parameters);
         }
 
-        public static async Task<ModelList<T>> QueryBy(string paramAndOr, params (string Key, object Value)[] parameters)
+		/// <summary>
+		/// Queries a list of all items in the Table where parameters matches. Can use "AND" and "OR"
+		/// </summary>
+		/// <param name="paramAndOr"></param>
+		/// <param name="parameters"></param>
+		/// <returns>A ModelList of items in the Table, matching the parameters.</returns>
+		public static async Task<ModelList<T>> QueryBy(string paramAndOr, params (string Key, object Value)[] parameters)
         {
             var results = new ModelList<T>();
 
@@ -162,8 +203,10 @@ namespace BlazorApp.Models
             {
                 while (await reader.ReadAsync())
                 {
+                    // Laver en instance a T, den item som bliver brugt.
                     var item = (T)Activator.CreateInstance(typeof(T));
 
+                    // Laver en liste over all værdier som er sat til Public og Instance.
                     var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
                     foreach (var property in properties)
                     {
@@ -189,6 +232,10 @@ namespace BlazorApp.Models
             return results;
         }
 
+        /// <summary>
+        /// Creates the tabel in the database.
+        /// </summary>
+        /// <returns></returns>
         public static async Task BuildTable()
         {
             string tableName = GetTableName();

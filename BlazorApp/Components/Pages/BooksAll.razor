@@ -165,7 +165,7 @@
 		if (_selectedGenres.Any())
 		{
 			filteredBooksList = filteredBooksList
-				.Where(book => book.GenreId != null && _selectedGenres.Contains(int.Parse(book.GenreId)));
+				.Where(book => book.GenreId != null && GenreMatches(book));
 		}
 
 		_filteredBooks.Clear();
@@ -173,6 +173,25 @@
 
 		isLoading = false;
 		StateHasChanged();
+	}
+
+	private bool GenreMatches(Book book)
+	{
+		bool matches = false;
+
+		string[] ids = book.GenreId.Split(",");
+		for (int i = 0; i < ids.Length; i++)
+		{
+			bool test = _selectedGenres.Contains(int.Parse(ids[i]));
+			if (test)
+			{
+				matches = true;
+				continue;
+			}
+			matches = false;
+		}
+
+		return matches;
 	}
 
 	private void NavigateToUrl()
